@@ -1,0 +1,14 @@
+<table>
+    <thead>
+        <tr>
+            <td ng-repeat="header in headers">{{ header }}</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="row in rows">
+            <td ng-repeat="cell in row">
+                {{ cell }}
+            </td>
+        </tr>
+    </tbody>
+</table>

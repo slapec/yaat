@@ -110,3 +110,5 @@ target/
 
 .python-version
 *.sqlite3
+
+/static
