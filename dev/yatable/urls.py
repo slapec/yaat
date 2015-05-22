@@ -2,9 +2,9 @@
 
 from django.conf.urls import url
 
-from api.views import index, test
+from .views import index, api
 
 urlpatterns = [
     url(r'^$', index, name='index'),
-    url(r'test$', test, name='test')
+    url(r'api$', api, name='api')
 ]

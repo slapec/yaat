@@ -1,3 +1,4 @@
+// Created: Fri May 22 2015 11:51:27 GMT+0200 (CEST)
 angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
@@ -37,15 +38,12 @@ angular.module('yaat', [])
         $scope.rows = rows;
     };
 
-    window.stuff = function(){
-        return $scope
-    }
 }])
 .directive('yat', [function(){
     return {
         restrict: 'E',
         controller: 'YATableController',
-        templateUrl: '/static/table/templates/yatable-body.html',
+        templateUrl: 'yatable/table.html',
         link: function(scope, element, attrs){
             if(attrs.api !== undefined){
                 scope.apiUrl = attrs.api;
@@ -53,3 +51,4 @@ angular.module('yaat', [])
         }
     }
 }]);
+angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<table><thead><tr><td ng-repeat=\"header in headers\">{{ header }}</td></tr></thead><tbody><tr ng-repeat=\"row in rows\"><td ng-repeat=\"cell in row\">{{ cell }}</td></tr></tbody></table><pre>{{ headers }}</pre>");}]);
