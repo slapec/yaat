@@ -1,15 +1,27 @@
-<table>
-    <thead>
-        <tr>
-            <td ng-repeat="header in headers">{{ header }}</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="row in rows">
-            <td ng-repeat="cell in row">
-                {{ cell }}
-            </td>
-        </tr>
-    </tbody>
-</table>
-<pre>{{ headers }}</pre>
+<div class="yat">
+    <div class="ya-ctrls">
+        <ol class="ya-headers">
+            <li ng-repeat="header in headers" id="{{ header.key }}">
+                <input type="checkbox" ng-model="header.hidden" ng-click="update()">
+                <span class="ya-header-value">{{ header.value }}</span>
+                <input type="checkbox" ng-model="header.desc" ng-click="update()">
+            </li>
+        </ol>
+    </div>
+    <table class="ya-table">
+        <thead>
+            <tr>
+                <td ng-repeat="header in visibleHeaders">{{ header.value }}</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="row in rows">
+                <td ng-repeat="cell in row">
+                    {{ cell }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pre class="ya-debug">headers={{ headers }}
+visibleHeaders={{ visibleHeaders }}</pre>
+</div>
