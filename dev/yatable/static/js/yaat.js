@@ -2,6 +2,26 @@ angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
+    $scope.$limit = 25;
+
+    $scope.update = function(sortable){
+        if(sortable !== undefined){
+            self.applyOrder(sortable);
+        }
+
+        $http({
+            method: 'POST',
+            url: $scope.$api,
+            data: $scope.$headers
+        }).success(function(data){
+            self.parse(data);
+        });
+    };
+
+    $scope.$watch('$api', function(){
+        self.init($scope.$api);
+    });
+
     this.init = function(url){
         if(url !== undefined) {
             $http({
@@ -23,9 +43,9 @@ angular.module('yaat', [])
                 visibleHeaders.push(header);
             }
         }
-        $scope.headers = headers;
-        $scope.visibleHeaders = visibleHeaders;
-        $scope.rows = data.rows;
+        $scope.$headers = headers;
+        $scope.$visibleHeaders = visibleHeaders;
+        $scope.$rows = data.rows;
     };
 
     this.applyOrder = function(sortable){
@@ -33,36 +53,18 @@ angular.module('yaat', [])
 
         var headerOrder = [];
         for(var i=0; i<keys.length; i++){
-            for(var j=0; j<$scope.headers.length; j++){
-                if(keys[i] === $scope.headers[j].key){
-                    headerOrder.push($scope.headers.splice(j, 1));
+            for(var j=0; j<$scope.$headers.length; j++){
+                if(keys[i] === $scope.$headers[j].key){
+                    headerOrder.push($scope.$headers.splice(j, 1));
                     break;
                 }
             }
         }
-        $scope.headers = headerOrder;
+        $scope.$headers = headerOrder;
     };
 
-    $scope.update = function(sortable){
-        if(sortable !== undefined){
-            self.applyOrder(sortable);
-            return;
-        }
-
-        $http({
-            method: 'POST',
-            url: $scope.apiUrl
-        }).success(function(data){
-            self.parse(data);
-        });
-    };
-
-    $scope.$watch('apiUrl', function(){
-        self.init($scope.apiUrl);
-    });
-        
     window.getScope = function(){
-        console.log($scope);
+        return $scope;
     }
 }])
 .directive('yat', [function(){
@@ -72,20 +74,38 @@ angular.module('yaat', [])
         templateUrl: 'yatable/table.html',
         scope: true,
         link: function(scope, element, attrs){
+            // Attribute parsing only
             if(attrs.api !== undefined){
-                scope.apiUrl = attrs.api;
+                scope.$api = attrs.api;
+            }
+
+            if(attrs.limit !== undefined){
+                scope.$limit = attrs.limit;
+            }
+
+            // Sortable setup -------------------------------------------------
+            var updateHandler = function(){
+                scope.update(this)
+            };
+
+            var options = scope.$sortableOptions;
+            if(options !== undefined){
+                if(!options.hasOwnProperty('update')){
+                    options.update = updateHandler;
+                }
+            }
+            else {
+                var options = {
+                    axis: 'y',
+                    containment: 'parent',
+                    tolerance: 'pointer',
+                    update: updateHandler
+                }
             }
 
             var headerList = $(element).find('.ya-headers');
             headerList.disableSelection();
-            headerList.sortable({
-                axis: 'y',
-                containment: 'parent',
-                tolerance: 'pointer',
-                update: function(){
-                    scope.update(this);
-                }
-            });
+            headerList.sortable(options);
         }
     }
 }]);

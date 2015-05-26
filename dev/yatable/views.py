@@ -8,15 +8,15 @@ from django.shortcuts import render
 def generate_table(cols, rows):
     table = []
     for i in range(rows):
-        row = []
+        row = {'id': '{0}'.format(i), 'values': []}
         table.append(row)
         for j in range(cols):
-            row.append('{1}, {0}'.format(i, j))
+            row['values'].append('{1}, {0}'.format(i, j))
     return table
 
 def generate_header(table):
     headers = []
-    for i, _ in enumerate(table[0]):
+    for i, _ in enumerate(table[0]['values']):
         headers.append({
             'key': 'key-{0}'.format(i),
             'value': 'Head-{0}'.format(i),
@@ -34,7 +34,6 @@ def api(request):
     rows = generate_table(COLS, ROWS)
     columns = generate_header(rows)
 
-    print(request.body.decode())
 
     reply = {
         'columns': columns,

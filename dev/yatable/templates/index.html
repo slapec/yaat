@@ -11,17 +11,20 @@
     <script src="{% static 'js/yaat.js' %}"></script>
     <!-- After building you can uncomment the following line to test the result script -->
     <!-- <script src="{% static 'js/yaat-full.min.js' %}"></script> -->
+</head>
+<body ng-app="yaat">
+    <h1>Declarative example</h1>
+    <yat api="{% url 'api:api' %}" limit="12"></yat>
+
+    <h1>Imperative example</h1>
     <script>
-        var app = angular.module('examples', ['yaat']);
+        var app = angular.module('yaat');
         app.controller('ImperativeExample', ['$scope', function($scope){
-            var url = "{% url 'api:api' %}";
+            $scope.$api = '{% url 'api:api' %}';
+            // TODO: Imperative limit handling
+            $scope.$sortableOptions = {};
         }]);
     </script>
-</head>
-<body ng-app="examples">
-    <h1>Declarative example</h1>
-    <yat api="{% url 'api:api' %}"></yat>
-    <h1>Imperative example</h1>
     <yat ng-controller="ImperativeExample"></yat>
 </body>
 </html>
