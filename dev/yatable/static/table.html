@@ -2,9 +2,9 @@
     <div class="ya-ctrls">
         <ol class="ya-headers">
             <li ng-repeat="header in $headers" id="{{ header.key }}">
-                <input type="checkbox" ng-model="header.hidden" ng-click="update()">
+                <input type="checkbox" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
                 <span class="ya-header-value">{{ header.value }}</span>
-                <input type="checkbox" ng-model="header.desc" ng-click="update()">
+                <input type="checkbox" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
             </li>
         </ol>
     </div>
@@ -22,7 +22,5 @@
             </tr>
         </tbody>
     </table>
-    <pre class="ya-debug">$headers={{ $headers }}
-$visibleHeaders={{ $visibleHeaders }}
-$limit={{ $limit }}
+    <pre class="ya-debug"></pre>
 </div>

@@ -2,44 +2,74 @@ angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
-    $scope.$limit = 25;
+    // Variable initialization ------------------------------------------------
+    if($scope.$limit === undefined){
+        $scope.$limit = 25;
+    }
 
-    $scope.update = function(sortable){
-        if(sortable !== undefined){
-            self.applyOrder(sortable);
-        }
-
-        $http({
-            method: 'POST',
-            url: $scope.$api,
-            data: $scope.$headers
-        }).success(function(data){
-            self.parse(data);
-        });
-    };
+    if($scope.$offset === undefined){
+        $scope.$offset = null;
+    }
 
     $scope.$watch('$api', function(){
-        self.init($scope.$api);
+        $scope.init($scope.$api);
     });
 
-    this.init = function(url){
-        if(url !== undefined) {
+    // Scope methods ----------------------------------------------------------
+    if($scope.update === undefined){
+        $scope.update = function(sortable){
+            if(sortable !== undefined){
+                self.applyOrder(sortable);
+            }
+
+            var payload = self.getPayload();
+
             $http({
                 method: 'POST',
-                url: url
-            }).success(function(data) {
-                self.parse(data)
+                url: $scope.$api,
+                data: payload
+            }).success(function(data){
+                self.parse(data);
             });
         }
-    };
+    }
 
+    if($scope.pager === undefined){
+        $scope.$pager = function(){
+            return $scope.rows[$scope.rows.length - 1].id;
+        }
+    }
+
+    if($scope.init === undefined){
+        $scope.init = function(url){
+            if(url !== undefined) {
+                var payload = self.initPayload();
+                $http({
+                    method: 'POST',
+                    url: url,
+                    data: payload
+                }).success(function(data) {
+                    self.parse(data)
+                });
+            }
+        }
+    }
+
+    // Privates ---------------------------------------------------------------
     this.parse = function(data){
         var headers = [];
         var visibleHeaders = [];
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
-            if(header.hidden === false){
+            if(header.desc === undefined){
+                header.unsortable = true;
+            }
+            if(header.hidden === undefined){
+                header.unhideable = true;
+                visibleHeaders.push(header);
+            }
+            else if(header.hidden === false){
                 visibleHeaders.push(header);
             }
         }
@@ -55,7 +85,7 @@ angular.module('yaat', [])
         for(var i=0; i<keys.length; i++){
             for(var j=0; j<$scope.$headers.length; j++){
                 if(keys[i] === $scope.$headers[j].key){
-                    headerOrder.push($scope.$headers.splice(j, 1));
+                    headerOrder.push($scope.$headers.splice(j, 1)[0]);
                     break;
                 }
             }
@@ -63,8 +93,30 @@ angular.module('yaat', [])
         $scope.$headers = headerOrder;
     };
 
-    window.getScope = function(){
-        return $scope;
+    this.initPayload = function(){
+        return {
+            offset: $scope.$offset,
+            limit: $scope.$limit
+        }
+    };
+
+    this.getPayload = function(){
+        var clean = [];
+        var headers = $scope.$headers;
+        for(var i=0; i<headers.length; i++){
+            var header = headers[i];
+            clean.push({
+                desc: header.desc,
+                hidden: header.hidden,
+                key: header.key
+            });
+        }
+
+        return {
+            offset: $scope.$offset,
+            limit: $scope.$limit,
+            headers: clean
+        }
     }
 }])
 .directive('yat', [function(){
@@ -74,13 +126,17 @@ angular.module('yaat', [])
         templateUrl: 'yatable/table.html',
         scope: true,
         link: function(scope, element, attrs){
-            // Attribute parsing only
+            // Attribute parsing only -----------------------------------------
             if(attrs.api !== undefined){
                 scope.$api = attrs.api;
             }
 
             if(attrs.limit !== undefined){
-                scope.$limit = attrs.limit;
+                scope.$limit = parseInt(attrs.limit);
+            }
+
+            if(attrs.offset !== undefined){
+                scope.$offset = attrs.offset;
             }
 
             // Sortable setup -------------------------------------------------

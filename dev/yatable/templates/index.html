@@ -14,14 +14,13 @@
 </head>
 <body ng-app="yaat">
     <h1>Declarative example</h1>
-    <yat api="{% url 'api:api' %}" limit="12"></yat>
+    <yat api="{% url 'api:api' %}"></yat>
 
     <h1>Imperative example</h1>
     <script>
         var app = angular.module('yaat');
         app.controller('ImperativeExample', ['$scope', function($scope){
             $scope.$api = '{% url 'api:api' %}';
-            // TODO: Imperative limit handling
             $scope.$sortableOptions = {};
         }]);
     </script>

@@ -1,9 +1,9 @@
-// Created: Tue May 26 2015 16:00:31 GMT+0200 (CEST)
+// Created: Wed May 27 2015 09:07:18 GMT+0200 (CEST)
 angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
-    $scope.$limit = 25;
+    $scope.$limit = $scope.$limit === undefined? 25:$scope.$limit ;
 
     $scope.update = function(sortable){
         if(sortable !== undefined){
@@ -40,7 +40,14 @@ angular.module('yaat', [])
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
-            if(header.hidden === false){
+            if(header.desc === undefined){
+                header.unsortable = true;
+            }
+            if(header.hidden === undefined){
+                header.unhideable = true;
+                visibleHeaders.push(header);
+            }
+            else if(header.hidden === false){
                 visibleHeaders.push(header);
             }
         }
@@ -110,4 +117,4 @@ angular.module('yaat', [])
         }
     }
 }]);
-angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-click=\"update()\"></li></ol></div><table class=\"ya-table\"><thead><tr><td ng-repeat=\"header in $visibleHeaders\">{{ header.value }}</td></tr></thead><tbody><tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\">{{ cell }}</td></tr></tbody></table><pre class=\"ya-debug\">$headers={{ $headers }}\n$visibleHeaders={{ $visibleHeaders }}\n$limit={{ $limit }}\n</pre></div>");}]);
+angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-disabled=\"header.unsortable\" ng-click=\"update()\"></li></ol></div><table class=\"ya-table\"><thead><tr><td ng-repeat=\"header in $visibleHeaders\">{{ header.value }}</td></tr></thead><tbody><tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\">{{ cell }}</td></tr></tbody></table><pre class=\"ya-debug\">$headers={{ $headers }}\n$visibleHeaders={{ $visibleHeaders }}\n$limit={{ $limit }}\n</pre></div>");}]);
