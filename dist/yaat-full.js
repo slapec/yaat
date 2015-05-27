@@ -1,4 +1,4 @@
-// Created: Wed May 27 2015 11:24:46 GMT+0200 (CEST)
+// Created: Wed May 27 2015 15:11:45 GMT+0200 (CEST)
 angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
@@ -12,11 +12,30 @@ angular.module('yaat', [])
         $scope.$offset = null;
     }
 
+    if($scope.dropdownText === undefined){
+        $scope.dropdownText = 'Columns';
+    }
+
     $scope.$watch('$api', function(){
         $scope.init($scope.$api);
     });
 
     // Scope methods ----------------------------------------------------------
+    if($scope.init === undefined){
+        $scope.init = function(url){
+            if(url !== undefined) {
+                var payload = self.initPayload();
+                $http({
+                    method: 'POST',
+                    url: url,
+                    data: payload
+                }).success(function(data) {
+                    self.parse(data)
+                });
+            }
+        }
+    }
+
     if($scope.update === undefined){
         $scope.update = function(sortable){
             if(sortable !== undefined){
@@ -35,24 +54,17 @@ angular.module('yaat', [])
         }
     }
 
-    if($scope.pager === undefined){
-        $scope.$pager = function(){
-            return $scope.rows[$scope.rows.length - 1].id;
+    if($scope.loadPage === undefined){
+        $scope.loadPage = function(offset){
+            $scope.$offset = offset;
+            $scope.update();
         }
     }
 
-    if($scope.init === undefined){
-        $scope.init = function(url){
-            if(url !== undefined) {
-                var payload = self.initPayload();
-                $http({
-                    method: 'POST',
-                    url: url,
-                    data: payload
-                }).success(function(data) {
-                    self.parse(data)
-                });
-            }
+    if($scope.getKey === undefined){
+        $scope.getKey = function(idx){
+            // This is useful for generating column css class
+            return $scope.$headers[idx].key;
         }
     }
 
@@ -77,6 +89,7 @@ angular.module('yaat', [])
         $scope.$headers = headers;
         $scope.$visibleHeaders = visibleHeaders;
         $scope.$rows = data.rows;
+        $scope.$pages = data.pages;
     };
 
     this.applyOrder = function(sortable){
@@ -140,6 +153,10 @@ angular.module('yaat', [])
                 scope.$offset = attrs.offset;
             }
 
+            if(attrs.dropdowntext !== undefined){
+                scope.dropdownText = attrs.dropdowntext;
+            }
+
             // Sortable setup -------------------------------------------------
             var updateHandler = function(){
                 scope.update(this)
@@ -166,4 +183,4 @@ angular.module('yaat', [])
         }
     }
 }]);
-angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-disabled=\"header.unsortable\" ng-click=\"update()\"></li></ol></div><table class=\"ya-table\"><thead><tr><td ng-repeat=\"header in $visibleHeaders\">{{ header.value }}</td></tr></thead><tbody><tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\">{{ cell }}</td></tr></tbody></table><pre class=\"ya-debug\"></pre></div>");}]);
+angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ul class=\"ya-drop\"><li><span class=\"ya-drop-label\">{{ dropdownText }}</span><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-disabled=\"header.unsortable\" ng-click=\"update()\"></li></ol></li></ul></div><div class=\"ya-wrap\"><table class=\"ya-table\"><thead><tr><th ng-repeat=\"header in $visibleHeaders\" class=\"yh-{{ header.key }}\">{{ header.value }}</th></tr></thead><tbody><tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\" class=\"yc-{{ getKey($index) }}\">{{ cell }}</td></tr></tbody></table></div><div class=\"ya-paging\"><div class=\"ya-prev\"><a ng-click=\"loadPage($pages.prev.key)\">{{ $pages.prev.value }}</a></div><div class=\"ya-current\">{{ $pages.current.value }}</div><div class=\"ya-next\"><a ng-click=\"loadPage($pages.next.key)\">{{ $pages.next.value }}</a></div></div></div>");}]);

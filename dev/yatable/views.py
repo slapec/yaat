@@ -32,12 +32,13 @@ def generate_header(table):
 def index(request):
     return render(request, 'index.html')
 
-COLS = 3
+COLS = 12
 ROWS = 100
 rows = generate_table(COLS, ROWS)
 columns, by_key = generate_header(rows)
 
 def api(request):
+    # TODO: Create some models
     body = json.loads(request.body.decode('utf-8'))
     print(pformat(body))
 
@@ -56,7 +57,7 @@ def api(request):
         _columns = columns
 
     _rows = []
-    for row in rows[offset:limit]:
+    for row in rows[offset:limit+offset]:
         _row = []
         for header in _columns:
             if not header['hidden']:
@@ -65,7 +66,12 @@ def api(request):
 
     reply = {
         'columns': _columns,
-        'rows': _rows
+        'rows': _rows,
+        'pages': {
+            'prev': {'key': 0 if offset - limit < 0 else offset - limit, 'value': '<'},
+            'current': {'key': offset, 'value': offset},
+            'next': {'key': offset if offset + limit >= ROWS else offset + limit, 'value': '>'}
+        }
     }
 
     return HttpResponse(json.dumps(reply, separators=(',', ':')), content_type='application/json')

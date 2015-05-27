@@ -11,11 +11,30 @@ angular.module('yaat', [])
         $scope.$offset = null;
     }
 
+    if($scope.dropdownText === undefined){
+        $scope.dropdownText = 'Columns';
+    }
+
     $scope.$watch('$api', function(){
         $scope.init($scope.$api);
     });
 
     // Scope methods ----------------------------------------------------------
+    if($scope.init === undefined){
+        $scope.init = function(url){
+            if(url !== undefined) {
+                var payload = self.initPayload();
+                $http({
+                    method: 'POST',
+                    url: url,
+                    data: payload
+                }).success(function(data) {
+                    self.parse(data)
+                });
+            }
+        }
+    }
+
     if($scope.update === undefined){
         $scope.update = function(sortable){
             if(sortable !== undefined){
@@ -34,24 +53,17 @@ angular.module('yaat', [])
         }
     }
 
-    if($scope.pager === undefined){
-        $scope.$pager = function(){
-            return $scope.rows[$scope.rows.length - 1].id;
+    if($scope.loadPage === undefined){
+        $scope.loadPage = function(offset){
+            $scope.$offset = offset;
+            $scope.update();
         }
     }
 
-    if($scope.init === undefined){
-        $scope.init = function(url){
-            if(url !== undefined) {
-                var payload = self.initPayload();
-                $http({
-                    method: 'POST',
-                    url: url,
-                    data: payload
-                }).success(function(data) {
-                    self.parse(data)
-                });
-            }
+    if($scope.getKey === undefined){
+        $scope.getKey = function(idx){
+            // This is useful for generating column css class
+            return $scope.$headers[idx].key;
         }
     }
 
@@ -76,6 +88,7 @@ angular.module('yaat', [])
         $scope.$headers = headers;
         $scope.$visibleHeaders = visibleHeaders;
         $scope.$rows = data.rows;
+        $scope.$pages = data.pages;
     };
 
     this.applyOrder = function(sortable){
@@ -137,6 +150,10 @@ angular.module('yaat', [])
 
             if(attrs.offset !== undefined){
                 scope.$offset = attrs.offset;
+            }
+
+            if(attrs.dropdowntext !== undefined){
+                scope.dropdownText = attrs.dropdowntext;
             }
 
             // Sortable setup -------------------------------------------------

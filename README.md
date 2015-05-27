@@ -19,7 +19,7 @@ It's been developed in Python 3.4.2 (but it should work in Python 2.x)
 
 ## Usage
 
-Use the `<yat>` directive to create a pretty table. 
+Use the `<yat>` directive to create a pretty table.
 
 ## API
 
@@ -55,7 +55,21 @@ where you can customize the behaviour of the directive:
                     ...
                 ] 
             }, ...
-        ]
+        ],
+        "pages": {
+            "prev": {
+                "key": <string>,
+                "value": <string>,
+            },
+            "current": {
+                "key": <string>,
+                "value": <string>,
+            },
+            "next": {
+                "key": <string>,
+                "value": <string>,
+            }
+        }
     }
     ```
     
@@ -68,23 +82,28 @@ where you can customize the behaviour of the directive:
     The default order of every column is expected to be ascending so toggle `desc` value
     if it is different.
     
+    Leave `"desc"` or `"hidden"` keys out if you don't wish to let the user change their
+    value (rendered checkboxes become `disabled`).
+    
     `rows` contains every result rows. `id` field should be unique for each row
     (so you should use some primary key here). `values` contains the actual row cells.
     
-    Leave `"desc"` or `"hidden"` keys out if you don't wish to let the user change their
-    value (rendered checkboxes become `disabled`).
+    `pages` object contains previous, current and next page labels. `key` is used as
+    page offset (passed to `$scope.loadPage()`) and `value` is its rendered value.
     
 -   `offset`
     
     Start page number (or any string). Value is stored in `$scope.$offset`. This value is
     sent in initialization `POST` only. Default value: `null`.
-    
-    After initialization the `id` of the last `row` is sent. This behaviour is defined by
-    `$scope.$pager` method. This method can be overridden.
-    
+
 -   `limit`
 
     Required row count. Value is stored in `$scope.$limit`. Default value: `25`.
+    
+-   `dropdownText`
+
+    This is the label text of the show/order drop-down list. Value is stored in `$scope.dropdownText`
+    Default value: `Columns`.
     
 > Note: Declared attributes have the highest priority.
 
@@ -135,8 +154,33 @@ If you prefer this way but you still want to use the default behaviour just set
 the `$scope.$api` property and everything starts working automagically (details in the
 above section).
 
+#### Hooking
+You can override most of scope methods of `<yat>`'s controller in case you prefer using
+your own algorithms but you still want to stick to the original program flow:
+
+-   `$scope.init(url)`
+
+    This method is called when the value of `$scope.$api` is changed. New value of
+    `$api` is passed.
+
+-   `$scope.update(sortable)`
+
+    This method is called when any table update is required (hide/sort checkbox or
+    column order changed). When column order is changed the `sortable` element is
+    passed so you can sync the header order (when no ordering made this argument is
+    `undefined`).
+    
+-   `$scope.loadPage(offset)`
+
+    This method is called when the user navigates through table pages. Offset is
+    the `key` value of the clicked `$scope.$pages` object (previous or next).
+    
+> **Important**: Your methods must operate on `yat` models or the template fails to render.
+> See the next section for model list.
+
+#### From scratch
 When the `$scope.$api` value is undefined you get full control over the table rendering.
-However there are 3 variables which must hold the values to be rendered:
+However there are some variables you must use to hold the values to be rendered:
 
 -   `$scope.$headers`: This array contains every available column header. Contained object
     structure must be this:
@@ -184,21 +228,27 @@ However there are 3 variables which must hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
-#### Hooking
-It is also possible to override a small part of the existing methods. These are:
-
--   `$scope.init(url)`
-
-    This method is called when the value of `$scope.$api` is changed. New value of
-    `$api` is passed.
+-   `$scope.$pages`: This object contains previous, current and next page offset. Expected
+    structure is this:
     
--   `$scope.update(sortable)`
+    ```
+    {
+        "prev": {
+            "key": <string>,
+            "value": <string>,
+        },
+        "current": {
+            "key": <string>,
+            "value": <string>,
+        },
+        "next": {
+            "key": <string>,
+            "value": <string>,
+        }
+    }
+    ```
 
-    This method is called when any table update is required (hide/sort checkbox or
-    column order changed). When column order is changed the `sortable` element is
-    passed so you can sync the header order (when no ordering made this argument is
-    `undefined`).
-
+   
 ### Passing `sortable();` options
 
 It is possible to customize the behaviour of the sortable which is used for column
@@ -230,3 +280,21 @@ is passed as an argument.
 ### Mixed mode
 It is fine to mix the previous modes. This can be useful when you want to change 
 the `$scope.$sortableOptions` but nothing more.
+
+## Styling
+
+`yaat` does not use any front-end framework by default. See the template (`dev/yatable/static/table.html`) for
+template details.
+
+### Dynamic classes
+There are some dynamic classes in the template:
+
+-   `"yh-{{ header.key }}"`
+
+    Table header cells always have their own `header.key` as CSS class prepended with `"yh-"`. This can be
+    useful for setting column width.
+    
+-   `"yc-{{ getKey($index) }}"`
+
+    Table body cells always have their column header key (`header.key`) as CSS class prepended with `"yc-"`.
+    You can use it for full column styling.
