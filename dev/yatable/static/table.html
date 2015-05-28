@@ -1,0 +1,38 @@
+<div class="yat">
+    <div class="ya-ctrls">
+        <ul class="ya-drop">
+            <li>
+                <span class="ya-drop-label">{{ dropdownText }}</span>
+                <ol class="ya-headers">
+                    <li ng-repeat="header in $headers" id="{{ header.key }}">
+                    <input type="checkbox" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
+                    <span class="ya-header-value">{{ header.value }}</span>
+                    <input type="checkbox" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
+                </ol>
+            </li>
+        </ul>
+    </div>
+    <div class="ya-wrap">
+        <table class="ya-table">
+            <thead>
+                <tr>
+                    <th ng-repeat="header in $visibleHeaders" class="yh-{{ header.key }}">{{ header.value }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in $rows">
+                    <td ng-repeat="cell in row.values" class="yc-{{ getKey($index) }}">
+                        {{ cell }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <nav class="ya-paging">
+        <ol>
+            <li class="ya-prev"><a ng-click="loadPage($pages.prev.key)">{{ $pages.prev.value }}</a></li>
+            <li class="ya-current">{{ $pages.current.value }}</li>
+            <li class="ya-next"><a ng-click="loadPage($pages.next.key)">{{ $pages.next.value }}</a></li>
+        </ol>
+    </nav>
+</div>
