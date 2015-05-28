@@ -28,13 +28,11 @@
             </tbody>
         </table>
     </div>
-    <div class="ya-paging">
-        <div class="ya-prev">
-            <a ng-click="loadPage($pages.prev.key)">{{ $pages.prev.value }}</a>
-        </div>
-        <div class="ya-current">{{ $pages.current.value }}</div>
-        <div class="ya-next">
-            <a ng-click="loadPage($pages.next.key)">{{ $pages.next.value }}</a>
-        </div>
-    </div>
+    <nav class="ya-paging">
+        <ol>
+            <li class="ya-prev"><a ng-click="loadPage($pages.prev.key)">{{ $pages.prev.value }}</a></li>
+            <li class="ya-current">{{ $pages.current.value }}</li>
+            <li class="ya-next"><a ng-click="loadPage($pages.next.key)">{{ $pages.next.value }}</a></li>
+        </ol>
+    </nav>
 </div>

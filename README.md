@@ -160,7 +160,7 @@ your own algorithms but you still want to stick to the original program flow:
 
 -   `$scope.init(url)`
 
-    This method is called when the value of `$scope.$api` is changed. New value of
+    This method is called when the value of `$scope.$api` is initialized or changed. New value of
     `$api` is passed.
 
 -   `$scope.update(sortable)`

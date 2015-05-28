@@ -32,7 +32,7 @@ def generate_header(table):
 def index(request):
     return render(request, 'index.html')
 
-COLS = 12
+COLS = 10
 ROWS = 100
 rows = generate_table(COLS, ROWS)
 columns, by_key = generate_header(rows)
@@ -40,7 +40,7 @@ columns, by_key = generate_header(rows)
 def api(request):
     # TODO: Create some models
     body = json.loads(request.body.decode('utf-8'))
-    print(pformat(body))
+    #print(pformat(body))
 
     offset = 0 if body['offset'] is None else body['offset']
     limit = int(body['limit'])
