@@ -68,9 +68,12 @@ def api(request):
         'columns': _columns,
         'rows': _rows,
         'pages': {
-            'prev': {'key': 0 if offset - limit < 0 else offset - limit, 'value': '<'},
-            'current': {'key': offset, 'value': offset},
-            'next': {'key': offset if offset + limit >= ROWS else offset + limit, 'value': '>'}
+            'list': [
+                {'key': 0 if offset - limit < 0 else offset - limit, 'value': '<'},
+                {'key': offset, 'value': offset},
+                {'key': offset if offset + limit >= ROWS else offset + limit, 'value': '>'}
+            ],
+            'current':
         }
     }
 

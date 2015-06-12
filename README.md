@@ -64,18 +64,13 @@ where you can customize the behaviour of the directive:
             }, ...
         ],
         "pages": {
-            "prev": {
-                "key": <string>,
-                "value": <string>,
-            },
-            "current": {
-                "key": <string>,
-                "value": <string>,
-            },
-            "next": {
-                "key": <string>,
-                "value": <string>,
-            }
+            "current": <string>,
+            "list": [
+                {
+                    "key": <string>,
+                    "value": <string>
+                }, ...
+            ],
         }
     }
     ```
@@ -95,8 +90,10 @@ where you can customize the behaviour of the directive:
     `rows` contains every result rows. `id` field should be unique for each row
     (so you should use some primary key here). `values` contains the actual row cells.
     
-    `pages` object contains previous, current and next page labels. `key` is used as
+    `pages.list` object contains pages as list. `key` is used as
     page offset (passed to `$scope.loadPage()`) and `value` is its rendered value.
+    `pages.current` is the index of the current page in the `pages.list` list. It is
+    rendered non-clickable.
     
 -   `offset`
     
@@ -245,23 +242,18 @@ However there are some variables you must use to hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
--   `$scope.$pages`: This object contains previous, current and next page offset. Expected
-    structure is this:
+-   `$scope.$pages`: This object contains a page list and the index of the current page
+    in the page list. Expected structure:
     
     ```
     {
-        "prev": {
-            "key": <string>,
-            "value": <string>,
-        },
-        "current": {
-            "key": <string>,
-            "value": <string>,
-        },
-        "next": {
-            "key": <string>,
-            "value": <string>,
-        }
+        "current": <string>,
+        "list": [
+            {
+                "key": <string>,
+                "value": <string>
+            }, ...
+        ],
     }
     ```
 
@@ -327,11 +319,7 @@ Example:
 
 ```
 <script type="text/ng-template" id="'yatable/row.html'">
-    <tr ng-repeat="row in $rows">
-        <td ng-repeat="cell in row.values" class="yc-{{ getKey($index) }}">
-            {{ cell }}
-        </td>
-    </tr>
+    <!-- Insert template code here -->
 </script>
 ```
 
@@ -341,6 +329,11 @@ List of default templates:
 
     This template includes the declaration of the `<tr></tr>` element used inside
     the `<tbody></tbody>` section of the rendered table.
+    
+-   `yatable/paging.html`
+
+    This template includes the paging footer right after the `<table>`. It's rendered in
+    `.ya-paging`.
 
 -   `yatable/table.html`
 
@@ -363,9 +356,27 @@ Available template URLs in the scope:
     
     Default: `yatable/row.html`
 
+-   `$pagingTemplate`
+
+    URL of the template of table's paging footer. Rendered content goes into `.ya-paging`.
+     
 #### `yatable/table.html`
 You can't override this URL in imperative mode because the `<yat>` directive gets access to
 its own (and its parents') scope after the template is fetched. So you have to pass this URL as
 an argument:
 
 `<yat api="/api/" template="custom-template.html">`
+
+### Scope API
+You can access all scope methods and objects in your templates listed above of course.
+However there are some methods which haven't been mentioned yet. They are usually accessed
+from templates.
+
+-   `$scope.getKey(index)`
+
+    It is just a shortcut of `$scope.$headers[index].key`.
+
+# TODO:
+
+-   Moving `.ya-ctrls` into a template breaks sortable because sortable is initialized
+    in base template but the `ctrls` template is loaded later so initialization fails.

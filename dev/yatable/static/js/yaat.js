@@ -11,10 +11,16 @@ angular.module('yaat', [])
         $scope.$offset = null;
     }
 
+    // Template URLs ----------------------------------------------------------
     if($scope.$rowTemplate === undefined){
         $scope.$rowTemplate = 'yatable/row.html';
     }
 
+    if($scope.$pagingTemplate === undefined){
+        $scope.$pagingTemplate = 'yatable/paging.html';
+    }
+
+    // Not-so private variables -----------------------------------------------
     if($scope.dropdownText === undefined) {
         $scope.dropdownText = 'Columns';
     }
