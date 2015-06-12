@@ -19,12 +19,7 @@
                     <th ng-repeat="header in $visibleHeaders" class="yh-{{ header.key }}">{{ header.value }}</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr ng-repeat="row in $rows">
-                    <td ng-repeat="cell in row.values" class="yc-{{ getKey($index) }}">
-                        {{ cell }}
-                    </td>
-                </tr>
+            <tbody ng-include="$rowTemplate">
             </tbody>
         </table>
     </div>

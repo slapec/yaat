@@ -8,22 +8,34 @@
     <script src="{% static 'js/jquery.js' %}"></script>
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'js/angular.js' %}"></script>
+    <!-- You can toggle dev or build scripts here -->
     <script src="{% static 'js/yaat.js' %}"></script>
-    <!-- After building you can uncomment the following line to test the result script -->
     <!-- <script src="{% static 'js/yaat-full.min.js' %}"></script> -->
 </head>
 <body ng-app="yaat">
     <h1>Declarative example</h1>
     <yat api="{% url 'api:api' %}"></yat>
 
+    <hr>
+
     <h1>Imperative example</h1>
+    <script type="text/ng-template" id="italic-row.html">
+        {% verbatim %}
+        <tr ng-repeat="row in $rows">
+            <td ng-repeat="cell in row.values">
+                <i>{{ cell }}</i>
+            </td>
+        </tr>
+        {% endverbatim %}
+    </script>
     <script>
         var app = angular.module('yaat');
         app.controller('ImperativeExample', ['$scope', function($scope){
             $scope.$api = '{% url 'api:api' %}';
             $scope.$sortableOptions = {};
+            $scope.$rowTemplate = 'italic-row.html'
         }]);
     </script>
-    <!--<yat ng-controller="ImperativeExample"></yat>-->
+    <yat ng-controller="ImperativeExample"></yat>
 </body>
 </html>

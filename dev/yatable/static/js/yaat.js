@@ -11,7 +11,11 @@ angular.module('yaat', [])
         $scope.$offset = null;
     }
 
-    if($scope.dropdownText === undefined){
+    if($scope.$rowTemplate === undefined){
+        $scope.$rowTemplate = 'yatable/row.html';
+    }
+
+    if($scope.dropdownText === undefined) {
         $scope.dropdownText = 'Columns';
     }
 
@@ -66,6 +70,8 @@ angular.module('yaat', [])
             return $scope.$headers[idx].key;
         }
     }
+
+
 
     // Privates ---------------------------------------------------------------
     this.parse = function(data){
@@ -136,7 +142,9 @@ angular.module('yaat', [])
     return {
         restrict: 'E',
         controller: 'YATableController',
-        templateUrl: 'yatable/table.html',
+        templateUrl: function(elem, attrs){
+            return attrs.template !== undefined ? attrs.template : 'yatable/table.html';
+        },
         scope: true,
         link: function(scope, element, attrs){
             // Attribute parsing only -----------------------------------------

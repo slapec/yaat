@@ -1,7 +1,9 @@
 # yaat - yet another angularjs table
+
 Created for full server-side processing
 
 ## Build
+
 Node.js is require to build the module:
 
 1. `npm install`
@@ -10,6 +12,10 @@ Node.js is require to build the module:
 Build result will be placed in `dist/` and in `dev/yatable/static/js`.
 
 ## Development
+
+Source is located in `dev/yatable/static/js/yaat.js`.
+
+### Development server
 
 A simple Django development project can be found in `dev/`.
 It's been developed in Python 3.4.2 (but it should work in Python 2.x) 
@@ -24,6 +30,7 @@ Use the `<yat>` directive to create a pretty table.
 ## API
 
 ### Declarative
+
 Use the declarative API if the built-in logic (HTTP loading, table rendering, column
 hiding and ordering, paging) suits your needs. In this case you still have some attributes
 where you can customize the behaviour of the directive:
@@ -105,7 +112,14 @@ where you can customize the behaviour of the directive:
     This is the label text of the show/order drop-down list. Value is stored in `$scope.dropdownText`
     Default value: `Columns`.
     
-> Note: Declared attributes have the highest priority.
+-   `template`
+
+    This is the template url of the `yat` directive which will be used to render the template.
+    Default value: `yatable/table.html`.
+    See `Overriding templates` section for more.
+  
+    
+> Note: Declared attributes have the priority than imperative (scope) ones.
 
 #### `POST`s
 
@@ -135,6 +149,7 @@ After then this structure is used:
 ```
 
 ### Imperative
+
 It is possible to override the default behaviour completely by passing a controller to the
 `<yat>` directive.
 
@@ -148,13 +163,14 @@ It is possible to override the default behaviour completely by passing a control
 <yat ng-controller="ImperativeExample"></yat>
 ```
 
-> Note: In real life create custom modules for your application which depend on `yaat`.
+> Note: Don't add controllers directly to the `yaat` module.
 
 If you prefer this way but you still want to use the default behaviour just set
 the `$scope.$api` property and everything starts working automagically (details in the
 above section).
 
 #### Hooking
+
 You can override most of scope methods of `<yat>`'s controller in case you prefer using
 your own algorithms but you still want to stick to the original program flow:
 
@@ -179,6 +195,7 @@ your own algorithms but you still want to stick to the original program flow:
 > See the next section for model list.
 
 #### From scratch
+
 When the `$scope.$api` value is undefined you get full control over the table rendering.
 However there are some variables you must use to hold the values to be rendered:
 
@@ -278,6 +295,7 @@ See the widget [documentation](http://api.jqueryui.com/sortable/) for more infor
 is passed as an argument.
     
 ### Mixed mode
+
 It is fine to mix the previous modes. This can be useful when you want to change 
 the `$scope.$sortableOptions` but nothing more.
 
@@ -286,7 +304,8 @@ the `$scope.$sortableOptions` but nothing more.
 `yaat` does not use any front-end framework by default. See the template (`dev/yatable/static/table.html`) for
 template details.
 
-### Dynamic classes
+### Dynamic CSS classes
+
 There are some dynamic classes in the template:
 
 -   `"yh-{{ header.key }}"`
@@ -298,3 +317,55 @@ There are some dynamic classes in the template:
 
     Table body cells always have their column header key (`header.key`) as CSS class prepended with `"yc-"`.
     You can use it for full column styling.
+    
+## Overriding templates
+
+It it also possible to override the whole template or just pieces of it. It is very easy
+using Angular's [`<script>` based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
+
+Example:
+
+```
+<script type="text/ng-template" id="'yatable/row.html'">
+    <tr ng-repeat="row in $rows">
+        <td ng-repeat="cell in row.values" class="yc-{{ getKey($index) }}">
+            {{ cell }}
+        </td>
+    </tr>
+</script>
+```
+
+List of default templates:
+
+-   `yatable/row.html`
+
+    This template includes the declaration of the `<tr></tr>` element used inside
+    the `<tbody></tbody>` section of the rendered table.
+
+-   `yatable/table.html`
+
+    This is the default base template of the rendered table.
+    
+> See `dev/yatable/static/*.html` for implementations.
+    
+### Per-table templates
+
+In case you need more than one instances of `<yat>` on the same page but one (or many)
+should use different templates than others then you can override the template URLs
+too.
+
+Available template URLs in the scope:
+
+-   `$rowTemplate`
+
+    URL of the template of `<tr></tr>` element used inside the `<tbody></tbody>` section of the
+    rendered table. 
+    
+    Default: `yatable/row.html`
+
+#### `yatable/table.html`
+You can't override this URL in imperative mode because the `<yat>` directive gets access to
+its own (and its parents') scope after the template is fetched. So you have to pass this URL as
+an argument:
+
+`<yat api="/api/" template="custom-template.html">`
