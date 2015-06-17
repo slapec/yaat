@@ -1,4 +1,4 @@
-// Created: Fri Jun 12 2015 13:18:57 GMT+0200 (CEST)
+// Created: Wed Jun 17 2015 11:33:58 GMT+0200 (CEST)
 angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;

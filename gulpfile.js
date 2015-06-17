@@ -48,6 +48,7 @@ gulp.task('default', function(){
         .pipe(gulp.dest(BASE + '/static/js/'))
         .pipe(gulp.dest(DIST))
         .pipe(uglify())
+        .pipe(inject.prepend(prependString))
         .pipe(rename(minifiedOutFilename))
         .pipe(gulp.dest(BASE + '/static/js'))
         .pipe(gulp.dest(DIST))
