@@ -1,4 +1,8 @@
 angular.module('yaat', [])
+.config(['$interpolateProvider', function($interpolateProvider) {
+    $interpolateProvider.startSymbol('[[');
+    $interpolateProvider.endSymbol(']]');
+}])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
@@ -101,6 +105,7 @@ angular.module('yaat', [])
         $scope.$visibleHeaders = visibleHeaders;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
+        $scope.$offset = data.pages[data.pages.current].key;
     };
 
     this.applyOrder = function(sortable){

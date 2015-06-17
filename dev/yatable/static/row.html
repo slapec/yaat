@@ -1,5 +1,5 @@
 <tr ng-repeat="row in $rows">
-    <td ng-repeat="cell in row.values" class="yc-{{ getKey($index) }}">
-        {{ cell }}
+    <td ng-repeat="cell in row.values" class="yc-[[ getKey($index) ]]">
+        [[ cell ]]
     </td>
 </tr>

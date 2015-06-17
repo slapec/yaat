@@ -318,7 +318,7 @@ using Angular's [`<script>` based template caching](https://docs.angularjs.org/a
 Example:
 
 ```
-<script type="text/ng-template" id="'yatable/row.html'">
+<script type="text/ng-template" id="yatable/row.html">
     <!-- Insert template code here -->
 </script>
 ```
