@@ -291,14 +291,18 @@ is passed as an argument.
 It is fine to mix the previous modes. This can be useful when you want to change 
 the `$scope.$sortableOptions` but nothing more.
 
-## Styling
+## Themes
 
-`yaat` does not use any front-end framework by default. See the template (`dev/yatable/static/table.html`) for
-template details.
+`yaat` comes with 2 themes built-in:
+
+- The `standard` theme which is basically empty (it is the default).
+- The `bootstrap` theme which is using Bootstrap.
+
+See the template (`dev/yatable/static/table.html`) for standard theme details.
 
 ### Dynamic CSS classes
 
-There are some dynamic classes in the template:
+There are some dynamic classes in the standard template:
 
 -   `"yh-{{ header.key }}"`
 

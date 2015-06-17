@@ -16,7 +16,9 @@ var DIST = 'dist/';
 var templateFiles = [
     BASE + '/static/table.html',
     BASE + '/static/row.html',
-    BASE + '/static/paging.html'
+    BASE + '/static/paging.html',
+    BASE + '/static/bootstrap_table.html',
+    BASE + '/static/bootstrap_paging.html'
 ];
 
 var mainFile = BASE + '/static/js/yaat.js';

@@ -73,7 +73,7 @@ def api(request):
                 {'key': offset, 'value': offset},
                 {'key': offset if offset + limit >= ROWS else offset + limit, 'value': '>'}
             ],
-            'current': 0
+            'current': 1
         }
     }
 

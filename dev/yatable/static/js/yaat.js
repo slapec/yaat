@@ -82,7 +82,6 @@ angular.module('yaat', [])
     }
 
 
-
     // Privates ---------------------------------------------------------------
     this.parse = function(data){
         var headers = [];
@@ -105,7 +104,7 @@ angular.module('yaat', [])
         $scope.$visibleHeaders = visibleHeaders;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
-        $scope.$offset = data.pages[data.pages.current].key;
+        $scope.$offset = data.pages.list[data.pages.current].key;
     };
 
     this.applyOrder = function(sortable){
