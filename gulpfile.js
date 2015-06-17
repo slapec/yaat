@@ -14,7 +14,9 @@ var BASE = 'dev/yatable';
 var DIST = 'dist/';
 
 var templateFiles = [
-    BASE + '/static/table.html'
+    BASE + '/static/table.html',
+    BASE + '/static/row.html',
+    BASE + '/static/paging.html'
 ];
 
 var mainFile = BASE + '/static/js/yaat.js';
@@ -46,6 +48,7 @@ gulp.task('default', function(){
         .pipe(gulp.dest(BASE + '/static/js/'))
         .pipe(gulp.dest(DIST))
         .pipe(uglify())
+        .pipe(inject.prepend(prependString))
         .pipe(rename(minifiedOutFilename))
         .pipe(gulp.dest(BASE + '/static/js'))
         .pipe(gulp.dest(DIST))

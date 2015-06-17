@@ -1,4 +1,4 @@
-// Created: Thu May 28 2015 08:47:17 GMT+0200 (CEST)
+// Created: Wed Jun 17 2015 11:33:58 GMT+0200 (CEST)
 angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
@@ -12,7 +12,17 @@ angular.module('yaat', [])
         $scope.$offset = null;
     }
 
-    if($scope.dropdownText === undefined){
+    // Template URLs ----------------------------------------------------------
+    if($scope.$rowTemplate === undefined){
+        $scope.$rowTemplate = 'yatable/row.html';
+    }
+
+    if($scope.$pagingTemplate === undefined){
+        $scope.$pagingTemplate = 'yatable/paging.html';
+    }
+
+    // Not-so private variables -----------------------------------------------
+    if($scope.dropdownText === undefined) {
         $scope.dropdownText = 'Columns';
     }
 
@@ -67,6 +77,8 @@ angular.module('yaat', [])
             return $scope.$headers[idx].key;
         }
     }
+
+
 
     // Privates ---------------------------------------------------------------
     this.parse = function(data){
@@ -137,7 +149,9 @@ angular.module('yaat', [])
     return {
         restrict: 'E',
         controller: 'YATableController',
-        templateUrl: 'yatable/table.html',
+        templateUrl: function(elem, attrs){
+            return attrs.template !== undefined ? attrs.template : 'yatable/table.html';
+        },
         scope: true,
         link: function(scope, element, attrs){
             // Attribute parsing only -----------------------------------------
@@ -183,4 +197,6 @@ angular.module('yaat', [])
         }
     }
 }]);
-angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ul class=\"ya-drop\"><li><span class=\"ya-drop-label\">{{ dropdownText }}</span><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-disabled=\"header.unsortable\" ng-click=\"update()\"></li></ol></li></ul></div><div class=\"ya-wrap\"><table class=\"ya-table\"><thead><tr><th ng-repeat=\"header in $visibleHeaders\" class=\"yh-{{ header.key }}\">{{ header.value }}</th></tr></thead><tbody><tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\" class=\"yc-{{ getKey($index) }}\">{{ cell }}</td></tr></tbody></table></div><nav class=\"ya-paging\"><ol><li class=\"ya-prev\"><a ng-click=\"loadPage($pages.prev.key)\">{{ $pages.prev.value }}</a></li><li class=\"ya-current\">{{ $pages.current.value }}</li><li class=\"ya-next\"><a ng-click=\"loadPage($pages.next.key)\">{{ $pages.next.value }}</a></li></ol></nav></div>");}]);
+angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\"><ul class=\"ya-drop\"><li><span class=\"ya-drop-label\">{{ dropdownText }}</span><ol class=\"ya-headers\"><li ng-repeat=\"header in $headers\" id=\"{{ header.key }}\"><input type=\"checkbox\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"> <span class=\"ya-header-value\">{{ header.value }}</span> <input type=\"checkbox\" ng-model=\"header.desc\" ng-disabled=\"header.unsortable\" ng-click=\"update()\"></li></ol></li></ul></div><div class=\"ya-wrap\"><table class=\"ya-table\"><thead><tr><th ng-repeat=\"header in $visibleHeaders\" class=\"yh-{{ header.key }}\">{{ header.value }}</th></tr></thead><tbody ng-include=\"$rowTemplate\"></tbody></table></div><nav class=\"ya-paging\" ng-include=\"$pagingTemplate\"></nav></div>");
+$templateCache.put("yatable/row.html","<tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values\" class=\"yc-{{ getKey($index) }}\">{{ cell }}</td></tr>");
+$templateCache.put("yatable/paging.html","<ol><li ng-repeat=\"page in $pages.list\" ng-class=\"{\'ya-prev\': $first, \'ya-next\': $last, \'ya-current\': $index==$pages.current}\"><a ng-click=\"loadPage(page.key)\" ng-if=\"$index !== $pages.current\">{{ page.value }}</a> <span ng-if=\"$index === $pages.current\">{{ page.value }}</span></li></ol>");}]);

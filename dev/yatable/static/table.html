@@ -23,11 +23,5 @@
             </tbody>
         </table>
     </div>
-    <nav class="ya-paging">
-        <ol>
-            <li class="ya-prev"><a ng-click="loadPage($pages.prev.key)">{{ $pages.prev.value }}</a></li>
-            <li class="ya-current">{{ $pages.current.value }}</li>
-            <li class="ya-next"><a ng-click="loadPage($pages.next.key)">{{ $pages.next.value }}</a></li>
-        </ol>
-    </nav>
+    <nav class="ya-paging" ng-include="$pagingTemplate"></nav>
 </div>
