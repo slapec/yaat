@@ -5,9 +5,9 @@
                 <span class="ya-drop-label">[[ dropdownText ]]</span>
                 <ol class="ya-headers">
                     <li ng-repeat="header in $headers" id="[[ header.key ]]">
-                    <input type="checkbox" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
+                    <input type="checkbox" class="ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
                     <span class="ya-header-value">[[ header.value ]]</span>
-                    <input type="checkbox" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
+                    <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
                 </ol>
             </li>
         </ul>

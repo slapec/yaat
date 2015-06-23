@@ -8,6 +8,7 @@ var inject = require('gulp-inject-string');
 var rename = require('gulp-rename');
 var templateCache = require('gulp-angular-templatecache');
 var uglify = require('gulp-uglify');
+var minifyCss = require('gulp-minify-css');
 
 // Paths ----------------------------------------------------------------------
 var BASE = 'dev/yatable';
@@ -32,11 +33,20 @@ var cacheOptions = {
     root: 'yatable'
 };
 
-var prependString = '// Created: ' + new Date() + '\n';
+var prependString = '/* Created: ' + new Date() + '*/\n';
 
 // Tasks ----------------------------------------------------------------------
 
-gulp.task('default', function(){
+gulp.task('minifyCss', function(){
+    var path = BASE + '/static/css/yaat.css';
+    return gulp.src(path)
+        .pipe(expect(path))
+        .pipe(minifyCss())
+        .pipe(inject.prepend(prependString))
+        .pipe(gulp.dest(DIST))
+});
+
+gulp.task('default', ['minifyCss'], function(){
     var templates = gulp.src(templateFiles)
         .pipe(expect(templateFiles))
         .pipe(htmlMinifier({collapseWhitespace: true}))

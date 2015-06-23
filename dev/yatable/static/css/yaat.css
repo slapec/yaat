@@ -1,3 +1,44 @@
+.ya-ctrls {
+    margin: 12px 0 12px 0;
+}
+
+.ya-paging {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 .ya-header-value {
     cursor: move;
+    padding-left: 4px;
+}
+
+.ya-hide {
+    visibility: hidden;
+    opacity: 0.2;
+}
+
+.ya-hide::before {
+    content: '\e106';
+    visibility: visible;
+}
+
+.ya-hide:checked {
+    opacity: 1;
+}
+
+.ya-sort {
+    visibility: hidden;
+    opacity: 0.2;
+}
+
+.ya-sort::before {
+    content: '\e156';
+    visibility: visible;
+}
+
+.ya-sort:checked {
+    opacity: 1;
 }

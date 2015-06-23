@@ -1,14 +1,14 @@
 <div class="yat">
-    <div class="ya-ctrls dropdown">
+    <div class="ya-ctrls dropdown pull-right">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             [[ dropdownText ]]
             <span class="caret"></span>
         </button>
         <ol class="ya-headers dropdown-menu" aria-labelledby="dropdownMenu">
             <li ng-repeat="header in $headers" id="[[ header.key ]]">
-                <input type="checkbox" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
+                <input type="checkbox" class="glyphicon ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
+                <input type="checkbox" class="glyphicon ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
                 <span class="ya-header-value">[[ header.value ]]</span>
-                <input type="checkbox" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
             </li>
         </ol>
     </div>

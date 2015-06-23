@@ -7,27 +7,15 @@ angular.module('yaat', [])
     var self = this;
 
     // Variable initialization ------------------------------------------------
-    if($scope.$limit === undefined){
-        $scope.$limit = 25;
-    }
-
-    if($scope.$offset === undefined){
-        $scope.$offset = null;
-    }
+    $scope.$limit = $scope.$limit || 25;
+    $scope.$offset = $scope.$offset || null;
 
     // Template URLs ----------------------------------------------------------
-    if($scope.$rowTemplate === undefined){
-        $scope.$rowTemplate = 'yatable/row.html';
-    }
-
-    if($scope.$pagingTemplate === undefined){
-        $scope.$pagingTemplate = 'yatable/paging.html';
-    }
+    $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
+    $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
     // Not-so private variables -----------------------------------------------
-    if($scope.dropdownText === undefined) {
-        $scope.dropdownText = 'Columns';
-    }
+    $scope.dropdownText = $scope.dropdownText || 'Columns';
 
     $scope.$watch('$api', function(){
         $scope.init($scope.$api);
