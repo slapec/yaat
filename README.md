@@ -296,7 +296,7 @@ the `$scope.$sortableOptions` but nothing more.
 `yaat` comes with 2 themes built-in:
 
 - The `standard` theme which is basically empty (it is the default).
-- The `bootstrap` theme which is using Bootstrap.
+- The `bootstrap` theme which uses Twitter's [Bootstrap](http://getbootstrap.com/).
 
 See the template (`dev/yatable/static/table.html`) for standard theme details.
 
@@ -317,7 +317,7 @@ There are some dynamic classes in the standard template:
 ## Overriding templates
 
 It it also possible to override the whole template or just pieces of it. It is very easy
-using Angular's [`<script>` based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
+using Angular's [<script> based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
 
 Example:
 
