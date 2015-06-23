@@ -1,4 +1,4 @@
-/* Created: Tue Jun 23 2015 14:05:12 GMT+0200 (CEST)*/
+/* Created: Tue Jun 23 2015 14:14:24 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
