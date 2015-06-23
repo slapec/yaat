@@ -10,19 +10,24 @@
     user-select: none;
 }
 
-.ya-header-value {
+.ya-headers li {
     cursor: move;
-    padding-left: 4px;
 }
 
 .ya-hide {
     visibility: hidden;
     opacity: 0.2;
+    cursor: pointer;
+    margin: 0 4px 0 4px!important;
 }
 
 .ya-hide::before {
     content: '\e106';
     visibility: visible;
+}
+
+.ya-hide:disabled::before {
+    visibility: hidden;
 }
 
 .ya-hide:checked {
@@ -32,11 +37,17 @@
 .ya-sort {
     visibility: hidden;
     opacity: 0.2;
+    cursor: pointer;
+    margin-right: 4px!important;
 }
 
 .ya-sort::before {
     content: '\e156';
     visibility: visible;
+}
+
+.ya-sort:disabled::before {
+    visibility: hidden;
 }
 
 .ya-sort:checked {
