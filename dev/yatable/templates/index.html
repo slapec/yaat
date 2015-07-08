@@ -15,29 +15,52 @@
     <!-- <script src="{% static 'js/yaat-full.min.js' %}"></script> -->
 </head>
 <body ng-app="yaat">
-    <h1>Declarative example</h1>
-    <yat api="{% url 'api:api' %}" template="yatable/bootstrap_table.html"></yat>
+    <h1>Imperative example (with filter form)</h1>
+    <script>
+        var app = angular.module('yaat');
+        app.controller('FilterForm', ['$scope', function($scope){
+            var self = this;
+            $scope.model = {};
+
+            $scope.$on('yaat.ready', function(){
+                $scope.model.search = 'asd';
+
+                $scope.$broadcast('yaat.http.extra', $scope.model);
+                $scope.$broadcast('yaat.init', "{% url 'api:api' %}");
+
+                $scope.$watch('model', function(newValue, oldValue){
+                    if(newValue !== oldValue){
+                        $scope.$broadcast('yaat.update');
+                    }
+                }, true);
+            });
+
+            $scope.$on('yaat.http.error', function(e, data, status){
+                console.log('yaat.http.error', data, status);
+            });
+
+            self.filter = function(){
+                $scope.$broadcast('yaat.update');
+            }
+        }]);
+
+        app.controller('Imperative', ['$scope', function($scope){
+            $scope.$limit = 10;
+        }]);
+    </script>
+    <form ng-controller="FilterForm as filter">
+        <div>
+            <input type="text" ng-model="model.search">
+            <button ng-click="filter.filter()">Filter</button>
+            Note: Server-side filtering is not implemented yet. See the raw network traffic.
+        </div>
+
+        <yat ng-controller="Imperative"></yat>
+    </form>
 
     <hr>
 
-    <h1>Imperative example</h1>
-    <script type="text/ng-template" id="italic-row.html">
-        {% verbatim %}
-        <tr ng-repeat="row in $rows">
-            <td ng-repeat="cell in row.values">
-                <i>[[ cell ]]</i>
-            </td>
-        </tr>
-        {% endverbatim %}
-    </script>
-    <script>
-        var app = angular.module('yaat');
-        app.controller('ImperativeExample', ['$scope', function($scope){
-            $scope.$api = '{% url 'api:api' %}';
-            $scope.$sortableOptions = {};
-            $scope.$rowTemplate = 'italic-row.html'
-        }]);
-    </script>
-    <yat ng-controller="ImperativeExample"></yat>
+    <h1>Declarative example (using Bootstrap template)</h1>
+    <yat api="{% url 'api:api' %}" template="yatable/bootstrap_table.html" limit="10"></yat>
 </body>
 </html>

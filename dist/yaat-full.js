@@ -1,4 +1,4 @@
-/* Created: Tue Jun 23 2015 14:14:24 GMT+0200 (CEST)*/
+/* Created: Wed Jul 08 2015 14:01:28 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -7,11 +7,11 @@ angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
-    // Variable initialization ------------------------------------------------
+    // Variable initialization -------------------------------------------------
     $scope.$limit = $scope.$limit || 25;
     $scope.$offset = $scope.$offset || null;
 
-    // Template URLs ----------------------------------------------------------
+    // Template URLs -----------------------------------------------------------
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
     $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
@@ -22,17 +22,36 @@ angular.module('yaat', [])
         $scope.init($scope.$api);
     });
 
-    // Scope methods ----------------------------------------------------------
+    // Events ------------------------------------------------------------------
+
+    $scope.$on('yaat.http.extra', function(e, args){
+        $scope.$httpExtra = args;
+    });
+
+    $scope.$on('yaat.init', function(e, api){
+        $scope.$api = api;
+    });
+
+    $scope.$on('yaat.update', function(){
+        $scope.update();
+    });
+
+    // Scope methods -----------------------------------------------------------
     if($scope.init === undefined){
         $scope.init = function(url){
             if(url !== undefined) {
                 var payload = self.initPayload();
+                if($scope.$httpExtra !== undefined){
+                    payload.extra = $scope.$httpExtra;
+                }
                 $http({
                     method: 'POST',
                     url: url,
                     data: payload
                 }).success(function(data) {
                     self.parse(data)
+                }).error(function(data, status, headers, config){
+                    $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
             }
         }
@@ -46,12 +65,18 @@ angular.module('yaat', [])
 
             var payload = self.getPayload();
 
+            if($scope.$httpExtra !== undefined){
+                payload.extra = $scope.$httpExtra;
+            }
+
             $http({
                 method: 'POST',
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
                 self.parse(data);
+            }).error(function(data, status, headers, config){
+                $scope.$emit('yaat.http.error', data, status, headers, config);
             });
         }
     }
@@ -71,7 +96,7 @@ angular.module('yaat', [])
     }
 
 
-    // Privates ---------------------------------------------------------------
+    // Controller only ---------------------------------------------------------
     this.parse = function(data){
         var headers = [];
         var visibleHeaders = [];
@@ -97,7 +122,7 @@ angular.module('yaat', [])
     };
 
     this.applyOrder = function(sortable){
-        var keys = $(sortable).sortable('toArray');
+        var keys = $(sortable).find('li').map(function(){return this.id}).get();
 
         var headerOrder = [];
         for(var i=0; i<keys.length; i++){
@@ -135,7 +160,10 @@ angular.module('yaat', [])
             limit: $scope.$limit,
             headers: clean
         }
-    }
+    };
+
+    // Ready to receive events -------------------------------------------------
+    $scope.$emit('yaat.ready');
 }])
 .directive('yat', [function(){
     return {
@@ -146,7 +174,7 @@ angular.module('yaat', [])
         },
         scope: true,
         link: function(scope, element, attrs){
-            // Attribute parsing only -----------------------------------------
+            // Attribute parsing only ------------------------------------------
             if(attrs.api !== undefined){
                 scope.$api = attrs.api;
             }
@@ -163,7 +191,7 @@ angular.module('yaat', [])
                 scope.dropdownText = attrs.dropdowntext;
             }
 
-            // Sortable setup -------------------------------------------------
+            // Sortable setup --------------------------------------------------
             var updateHandler = function(){
                 scope.update(this)
             };

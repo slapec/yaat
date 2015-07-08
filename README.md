@@ -1,4 +1,4 @@
-# yaat - yet another angularjs table
+# Yaat - yet another angularjs table
 
 Created for full server-side processing
 
@@ -291,9 +291,42 @@ is passed as an argument.
 It is fine to mix the previous modes. This can be useful when you want to change 
 the `$scope.$sortableOptions` but nothing more.
 
+## Events
+
+It is possible to send and receive events from Yaat so you can create connections
+between your own and Yaat's directive. This can be useful when you want the table
+to be controller by a parent controller (e.g.: Yaat is a child of a filter form
+so some data of the filter should be passed during paging).
+
+### Events that Yaat is listening to
+
+-   `yaat.http.extra`
+
+    This event is used to set some extra data which should be sent on every `POST`.
+    Event data will have the key `"extra"` in the `POST`.
+    
+-   `yaat.init`
+
+    This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`).
+    
+-   `yaat.update`
+
+    This event calls `$scope.update()`
+
+### Events that Yaat is emitting
+
+-   `yaat.ready`
+
+    Sent when the `yaat` directive is ready to receive events.
+
+-   `yaat.http.errors`
+
+    This event is emitted when the `POST` fails. Passed arguments: `data` (error reply), 
+    `status` (code), `headers`, `config`.
+
 ## Themes
 
-`yaat` comes with 2 themes built-in:
+Yaat comes with 2 themes built-in:
 
 - The `standard` theme which is basically empty (it is the default).
 - The `bootstrap` theme which uses Twitter's [Bootstrap](http://getbootstrap.com/).
@@ -317,7 +350,7 @@ There are some dynamic classes in the standard template:
 ## Overriding templates
 
 It it also possible to override the whole template or just pieces of it. It is very easy
-using Angular's [<script> based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
+using Angular's [script based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
 
 Example:
 
