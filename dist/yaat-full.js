@@ -1,4 +1,4 @@
-/* Created: Wed Jul 08 2015 14:01:28 GMT+0200 (CEST)*/
+/* Created: Wed Jul 08 2015 15:53:13 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -29,6 +29,9 @@ angular.module('yaat', [])
     });
 
     $scope.$on('yaat.init', function(e, api){
+        if($scope.$api === api){
+            $scope.init($scope.$api);
+        }
         $scope.$api = api;
     });
 
@@ -49,7 +52,8 @@ angular.module('yaat', [])
                     url: url,
                     data: payload
                 }).success(function(data) {
-                    self.parse(data)
+                    $scope.$emit('yaat.http.success');
+                    self.parse(data);
                 }).error(function(data, status, headers, config){
                     $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
@@ -74,6 +78,7 @@ angular.module('yaat', [])
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
+                $scope.$emit('yaat.http.success');
                 self.parse(data);
             }).error(function(data, status, headers, config){
                 $scope.$emit('yaat.http.error', data, status, headers, config);

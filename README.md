@@ -299,11 +299,6 @@ to be controller by a parent controller (e.g.: Yaat is a child of a filter form
 so some data of the filter should be passed during paging).
 
 ### Events that Yaat is listening to
-
--   `yaat.http.extra`
-
-    This event is used to set some extra data which should be sent on every `POST`.
-    Event data will have the key `"extra"` in the `POST`.
     
 -   `yaat.init`
 
@@ -312,12 +307,21 @@ so some data of the filter should be passed during paging).
 -   `yaat.update`
 
     This event calls `$scope.update()`
+    
+-   `yaat.http.extra`
+
+    This event is used to set some extra data which should be sent on every `POST`.
+    Event data will have the key `"extra"` in the `POST`.
 
 ### Events that Yaat is emitting
 
 -   `yaat.ready`
 
     Sent when the `yaat` directive is ready to receive events.
+    
+-   `yaat.http.success`
+
+    Emitted when the last `POST` was successful.
 
 -   `yaat.http.errors`
 
