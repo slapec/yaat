@@ -1,4 +1,4 @@
-/* Created: Wed Jul 08 2015 12:03:10 GMT+0200 (CEST)*/
+/* Created: Wed Jul 08 2015 14:01:28 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -23,18 +23,16 @@ angular.module('yaat', [])
     });
 
     // Events ------------------------------------------------------------------
+
     $scope.$on('yaat.http.extra', function(e, args){
-        console.log('yaat.http.extra');
         $scope.$httpExtra = args;
     });
 
     $scope.$on('yaat.init', function(e, api){
-        console.log('yaat.init');
         $scope.$api = api;
     });
 
     $scope.$on('yaat.update', function(){
-        console.log('yaat.update');
         $scope.update();
     });
 
@@ -43,12 +41,17 @@ angular.module('yaat', [])
         $scope.init = function(url){
             if(url !== undefined) {
                 var payload = self.initPayload();
+                if($scope.$httpExtra !== undefined){
+                    payload.extra = $scope.$httpExtra;
+                }
                 $http({
                     method: 'POST',
                     url: url,
                     data: payload
                 }).success(function(data) {
                     self.parse(data)
+                }).error(function(data, status, headers, config){
+                    $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
             }
         }
@@ -72,8 +75,8 @@ angular.module('yaat', [])
                 data: payload
             }).success(function(data){
                 self.parse(data);
-            }).error(function(){
-                $scope.$emit('yaat.http.error', arguments);
+            }).error(function(data, status, headers, config){
+                $scope.$emit('yaat.http.error', data, status, headers, config);
             });
         }
     }
@@ -119,7 +122,7 @@ angular.module('yaat', [])
     };
 
     this.applyOrder = function(sortable){
-        var keys = $(sortable).sortable('toArray');
+        var keys = $(sortable).find('li').map(function(){return this.id}).get();
 
         var headerOrder = [];
         for(var i=0; i<keys.length; i++){
@@ -157,7 +160,10 @@ angular.module('yaat', [])
             limit: $scope.$limit,
             headers: clean
         }
-    }
+    };
+
+    // Ready to receive events -------------------------------------------------
+    $scope.$emit('yaat.ready');
 }])
 .directive('yat', [function(){
     return {
@@ -168,7 +174,7 @@ angular.module('yaat', [])
         },
         scope: true,
         link: function(scope, element, attrs){
-            // Attribute parsing only -----------------------------------------
+            // Attribute parsing only ------------------------------------------
             if(attrs.api !== undefined){
                 scope.$api = attrs.api;
             }
@@ -185,7 +191,7 @@ angular.module('yaat', [])
                 scope.dropdownText = attrs.dropdowntext;
             }
 
-            // Sortable setup -------------------------------------------------
+            // Sortable setup --------------------------------------------------
             var updateHandler = function(){
                 scope.update(this)
             };

@@ -37,7 +37,11 @@
 
             $scope.$on('yaat.http.error', function(e, data, status){
                 console.log('yaat.http.error', data, status);
-            })
+            });
+
+            self.filter = function(){
+                $scope.$broadcast('yaat.update');
+            }
         }]);
 
         app.controller('Imperative', ['$scope', function($scope){
