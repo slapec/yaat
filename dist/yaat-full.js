@@ -1,4 +1,4 @@
-/* Created: Tue Jun 23 2015 14:14:24 GMT+0200 (CEST)*/
+/* Created: Wed Jul 08 2015 12:03:10 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -7,11 +7,11 @@ angular.module('yaat', [])
 .controller('YATableController', ['$scope', '$http', function($scope, $http){
     var self = this;
 
-    // Variable initialization ------------------------------------------------
+    // Variable initialization -------------------------------------------------
     $scope.$limit = $scope.$limit || 25;
     $scope.$offset = $scope.$offset || null;
 
-    // Template URLs ----------------------------------------------------------
+    // Template URLs -----------------------------------------------------------
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
     $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
@@ -22,7 +22,23 @@ angular.module('yaat', [])
         $scope.init($scope.$api);
     });
 
-    // Scope methods ----------------------------------------------------------
+    // Events ------------------------------------------------------------------
+    $scope.$on('yaat.http.extra', function(e, args){
+        console.log('yaat.http.extra');
+        $scope.$httpExtra = args;
+    });
+
+    $scope.$on('yaat.init', function(e, api){
+        console.log('yaat.init');
+        $scope.$api = api;
+    });
+
+    $scope.$on('yaat.update', function(){
+        console.log('yaat.update');
+        $scope.update();
+    });
+
+    // Scope methods -----------------------------------------------------------
     if($scope.init === undefined){
         $scope.init = function(url){
             if(url !== undefined) {
@@ -46,12 +62,18 @@ angular.module('yaat', [])
 
             var payload = self.getPayload();
 
+            if($scope.$httpExtra !== undefined){
+                payload.extra = $scope.$httpExtra;
+            }
+
             $http({
                 method: 'POST',
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
                 self.parse(data);
+            }).error(function(){
+                $scope.$emit('yaat.http.error', arguments);
             });
         }
     }
@@ -71,7 +93,7 @@ angular.module('yaat', [])
     }
 
 
-    // Privates ---------------------------------------------------------------
+    // Controller only ---------------------------------------------------------
     this.parse = function(data){
         var headers = [];
         var visibleHeaders = [];
