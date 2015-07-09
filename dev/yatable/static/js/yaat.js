@@ -9,6 +9,7 @@ angular.module('yaat', [])
     // Variable initialization -------------------------------------------------
     $scope.$limit = $scope.$limit || 25;
     $scope.$offset = $scope.$offset || null;
+    $scope.$untouchedOffset = $scope.$offset;
 
     // Template URLs -----------------------------------------------------------
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
@@ -87,8 +88,10 @@ angular.module('yaat', [])
 
     if($scope.loadPage === undefined){
         $scope.loadPage = function(offset){
-            $scope.$offset = offset;
-            $scope.update();
+            if(offset){
+                $scope.$offset = offset;
+                $scope.update();
+            }
         }
     }
 
@@ -142,7 +145,7 @@ angular.module('yaat', [])
 
     this.initPayload = function(){
         return {
-            offset: $scope.$offset,
+            offset: $scope.$untouchedOffset,
             limit: $scope.$limit
         }
     };
@@ -189,6 +192,7 @@ angular.module('yaat', [])
 
             if(attrs.offset !== undefined){
                 scope.$offset = attrs.offset;
+                scope.$untouchedOffset = attrs.offset;
             }
 
             if(attrs.dropdowntext !== undefined){
@@ -218,6 +222,10 @@ angular.module('yaat', [])
             var headerList = $(element).find('.ya-headers');
             headerList.disableSelection();
             headerList.sortable(options);
+
+            $(document).on('click', '.dropdown-menu', function(e) {
+                e.stopPropagation();
+            });
         }
     }
 }]);
