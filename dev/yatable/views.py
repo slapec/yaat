@@ -33,7 +33,7 @@ def index(request):
     return render(request, 'index.html')
 
 COLS = 10
-ROWS = 100
+ROWS = 300
 rows = generate_table(COLS, ROWS)
 columns, by_key = generate_header(rows)
 

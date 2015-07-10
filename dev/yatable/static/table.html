@@ -2,11 +2,11 @@
     <div class="ya-ctrls">
         <ul class="ya-drop">
             <li>
-                <span class="ya-drop-label">[[ dropdownText ]]</span>
+                <span class="ya-drop-label">[[ ::dropdownText ]]</span>
                 <ol class="ya-headers">
-                    <li ng-repeat="header in $headers" id="[[ header.key ]]">
+                    <li ng-repeat="header in $headers" id="[[ ::header.key ]]">
                     <input type="checkbox" class="ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
-                    <span class="ya-header-value">[[ header.value ]]</span>
+                    <span class="ya-header-value">[[ ::header.value ]]</span>
                 </ol>
             </li>
         </ul>
@@ -15,9 +15,9 @@
         <table class="ya-table">
             <thead>
                 <tr>
-                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ header.key ]]">
+                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ ::header.key ]]">
                         <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
-                        [[ header.value ]]
+                        [[ ::header.value ]]
                     </th>
                 </tr>
             </thead>
