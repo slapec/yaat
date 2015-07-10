@@ -50,7 +50,7 @@ where you can customize the behaviour of the directive:
             {
                 "key": <string>,
                 "value": <string>,
-                "desc": <boolean>,
+                "order": <boolean>,
                 "hidden": <boolean>
             }, ...
         ],
@@ -81,10 +81,10 @@ where you can customize the behaviour of the directive:
     rows.
     `key` indicates column key, which can be anything. `value` will be placed on the
     rendered table.
-    The default order of every column is expected to be ascending so toggle `desc` value
-    if it is different.
+    Use the key `order` to indicate if the column is ordered. Value `0` stands for unordered,
+    `1` is for ascending and `2` is for descending order.
     
-    Leave `"desc"` or `"hidden"` keys out if you don't wish to let the user change their
+    Leave `"order"` or `"hidden"` keys out if you don't wish to let the user change their
     value (rendered checkboxes become `disabled`).
     
     `rows` contains every result rows. `id` field should be unique for each row
@@ -137,7 +137,7 @@ After then this structure is used:
     "limit": $scope.$limit,
     "headers": [
         {
-            "desc": <boolean>,
+            "order": <boolean>,
             "hidden": <boolean>,
             "key": <string>
         }, ...
@@ -204,7 +204,7 @@ However there are some variables you must use to hold the values to be rendered:
         {
             "key": <string>,
             "value": <string>,
-            "desc": <boolean>,
+            "order": <boolean>,
             "hidden": <boolean>
         }, ...
     ]

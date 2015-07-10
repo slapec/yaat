@@ -22,7 +22,7 @@ def generate_header(table):
         data = {
             'key': str(i),
             'value': 'Head-{0}'.format(i),
-            'desc': False,
+            'order': 0,
             'hidden': False
         }
         headers.append(data)
@@ -33,7 +33,7 @@ def index(request):
     return render(request, 'index.html')
 
 COLS = 10
-ROWS = 100
+ROWS = 300
 rows = generate_table(COLS, ROWS)
 columns, by_key = generate_header(rows)
 
@@ -50,7 +50,7 @@ def api(request):
         for header in body['headers']:
             h = by_key[header['key']]
             h['hidden'] = header['hidden']
-            h['desc'] = header['desc']
+            h['order'] = header['order']
 
             _columns.append(h)
     else:

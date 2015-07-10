@@ -102,6 +102,10 @@ angular.module('yaat', [])
         }
     }
 
+    $scope.toggleSorting = function(header){
+        header.order = (header.order + 1) % 3;
+        $scope.update();
+    };
 
     // Controller only ---------------------------------------------------------
     this.parse = function(data){
@@ -110,7 +114,7 @@ angular.module('yaat', [])
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
-            if(header.desc === undefined){
+            if(header.order === undefined){
                 header.unsortable = true;
             }
             if(header.hidden === undefined){
@@ -156,7 +160,7 @@ angular.module('yaat', [])
         for(var i=0; i<headers.length; i++){
             var header = headers[i];
             clean.push({
-                desc: header.desc,
+                order: header.order,
                 hidden: header.hidden,
                 key: header.key
             });
@@ -228,4 +232,14 @@ angular.module('yaat', [])
             });
         }
     }
-}]);
+}])
+.directive('ngIndeterminate', function($compile) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attributes) {
+            scope.$watch(attributes['ngIndeterminate'], function (value) {
+                element.prop('indeterminate', !!value);
+            });
+        }
+    };
+});
