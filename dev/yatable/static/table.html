@@ -7,7 +7,6 @@
                     <li ng-repeat="header in $headers" id="[[ header.key ]]">
                     <input type="checkbox" class="ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
                     <span class="ya-header-value">[[ header.value ]]</span>
-                    <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
                 </ol>
             </li>
         </ul>
@@ -16,7 +15,10 @@
         <table class="ya-table">
             <thead>
                 <tr>
-                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ header.key ]]">[[ header.value ]]</th>
+                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ header.key ]]">
+                        <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
+                        [[ header.value ]]
+                    </th>
                 </tr>
             </thead>
             <tbody ng-include="$rowTemplate">

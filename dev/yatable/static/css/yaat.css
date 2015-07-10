@@ -16,7 +16,7 @@
 
 .ya-hide {
     visibility: hidden;
-    opacity: 0.2;
+    opacity: 0.3;
     cursor: pointer;
     margin: 0 4px 0 4px!important;
 }
@@ -36,20 +36,29 @@
 
 .ya-sort {
     visibility: hidden;
-    opacity: 0.2;
+    opacity: 0.3;
     cursor: pointer;
     margin-right: 4px!important;
 }
 
 .ya-sort::before {
-    content: '\e156';
+    content: '\e150';
     visibility: visible;
 }
 
-.ya-sort:disabled::before {
-    visibility: hidden;
+.ya-sort:indeterminate {
+    opacity: 1;
+}
+
+.ya-sort:indeterminate::before {
+    content: '\e155';
 }
 
 .ya-sort:checked {
+    opacity: 1;
+}
+
+.ya-sort:checked::before {
+    content: '\e156';
     opacity: 1;
 }

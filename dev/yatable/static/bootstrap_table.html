@@ -7,7 +7,6 @@
         <ol class="ya-headers dropdown-menu" aria-labelledby="dropdownMenu">
             <li ng-repeat="header in $headers" id="[[ header.key ]]">
                 <input type="checkbox" class="glyphicon ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
-                <input type="checkbox" class="glyphicon ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
                 <span class="ya-header-value">[[ header.value ]]</span>
             </li>
         </ol>
@@ -16,7 +15,10 @@
         <table class="ya-table table table-bordered table-condensed table-customized table-striped">
             <thead>
                 <tr>
-                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ header.key ]]">[[ header.value ]]</th>
+                    <th ng-repeat="header in $visibleHeaders" class="yh-[[ header.key ]]">
+                        <input type="checkbox" class="glyphicon ya-sort" ng-indeterminate="header.order==1" ng-checked="header.order==2" ng-disabled="header.unsortable" ng-click="toggleSorting(header)">
+                        [[ header.value ]]
+                    </th>
                 </tr>
             </thead>
             <tbody ng-include="$rowTemplate">
