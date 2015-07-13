@@ -39,7 +39,7 @@ where you can customize the behaviour of the directive:
 
     There goes your API entry point which will be used to initialize the table. This
     value is stored in `$scope.$api` and it is also watched so changing it dynamically
-    causes table redraw.
+    causes table reload.
     
     Yaat sends a single `HTTP POST` with empty body on initialization.
     You must always return the following structure:
@@ -102,7 +102,14 @@ where you can customize the behaviour of the directive:
 
 -   `limit`
 
-    Required row count. Value is stored in `$scope.$limit`. Default value: `25`.
+    Required row count. This value can either be a constant or a model. Default value: `25`.
+    Current value is stored in `$scope.$limit`. This value is watched so you can set the
+    visible row count dynamically.
+
+-   `nodropdown`
+
+    Use this attribute if you wish to hide the dropdown. The value of the attribute is not stored
+    but when the attribute exists the `$scope.$noDropdown` is set to `true`. Default value: `false`.
     
 -   `dropdownText`
 
@@ -212,11 +219,11 @@ However there are some variables you must use to hold the values to be rendered:
 
     These items will be rendered in the column order/hide box.
     
-    There are some optional keys too:
-    -   Disable column sorting: `"unsortable": true`.
-    -   Disable column hiding: `"unhideable": true`.
+    Leave `"order"` or `"hidden"` keys out to prevent the column to be ordered or hidden.
+    When the `"order"` key is missing the `"unorderable": true` key will be added to the column.
+    When the `"hidden"` key is missing the `"unhideable": true` key will be added to the column.
     
-    The above keys set hide and sort checkboxes `disabled`. 
+    These are client-side keys only so they will not be sent in any `POST`.
     
 -   `$scope.$visibleHeaders`: This array contains every visible header. Contained object
     structure is identical to the ones stored in `$headers` but this array must not

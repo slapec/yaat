@@ -9,21 +9,28 @@ angular.module('yaat', [])
     // Variable initialization -------------------------------------------------
     $scope.$limit = $scope.$limit || 25;
     $scope.$offset = $scope.$offset || null;
+    $scope.$noDropdown = $scope.$noDropdown || false;
     $scope.$untouchedOffset = $scope.$offset;
 
     // Template URLs -----------------------------------------------------------
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
     $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
-    // Not-so private variables -----------------------------------------------
+    // Not-so private variables ------------------------------------------------
     $scope.dropdownText = $scope.dropdownText || 'Columns';
 
+    // Watchers ----------------------------------------------------------------
     $scope.$watch('$api', function(){
         $scope.init($scope.$api);
     });
 
-    // Events ------------------------------------------------------------------
+    $scope.$watch('$limit', function(newValue, oldValue){
+        if(newValue !== oldValue){
+            $scope.update();
+        }
+    });
 
+    // Events ------------------------------------------------------------------
     $scope.$on('yaat.http.extra', function(e, args){
         $scope.$httpExtra = args;
     });
@@ -115,7 +122,7 @@ angular.module('yaat', [])
             var header = data.columns[i];
             headers.push(header);
             if(header.order === undefined){
-                header.unsortable = true;
+                header.unorderable = true;
             }
             if(header.hidden === undefined){
                 header.unhideable = true;
@@ -191,7 +198,12 @@ angular.module('yaat', [])
             }
 
             if(attrs.limit !== undefined){
-                scope.$limit = parseInt(attrs.limit);
+                scope.$limit = scope.$eval(attrs.limit);
+                scope.$watch(attrs.limit, function(newValue, oldValue){
+                    if(newValue !== oldValue){
+                        scope.$limit = newValue;
+                    }
+                });
             }
 
             if(attrs.offset !== undefined){
@@ -201,6 +213,10 @@ angular.module('yaat', [])
 
             if(attrs.dropdowntext !== undefined){
                 scope.dropdownText = attrs.dropdowntext;
+            }
+
+            if(attrs.nodropdown !== undefined){
+                scope.$noDropdown = true
             }
 
             // Sortable setup --------------------------------------------------
@@ -227,6 +243,7 @@ angular.module('yaat', [])
             headerList.disableSelection();
             headerList.sortable(options);
 
+            // To avoid the dropdown closing itself when clicking on a checkbox
             $(document).on('click', '.dropdown-menu', function(e) {
                 e.stopPropagation();
             });
@@ -234,10 +251,11 @@ angular.module('yaat', [])
     }
 }])
 .directive('ngIndeterminate', function($compile) {
+    // Source: http://stackoverflow.com/a/22144570/1069572
     return {
         restrict: 'A',
         link: function(scope, element, attributes) {
-            scope.$watch(attributes['ngIndeterminate'], function (value) {
+            scope.$watch(attributes['ngIndeterminate'], function(value){
                 element.prop('indeterminate', !!value);
             });
         }

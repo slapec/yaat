@@ -1,5 +1,5 @@
 <div class="yat">
-    <div class="ya-ctrls">
+    <div class="ya-ctrls" ng-hide="$noDropdown">
         <ul class="ya-drop">
             <li>
                 <span class="ya-drop-label">[[ ::dropdownText ]]</span>
@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th ng-repeat="header in $visibleHeaders" class="yh-[[ ::header.key ]]">
-                        <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unsortable" ng-click="update()">
+                        <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unorderable" ng-click="update()">
                         [[ ::header.value ]]
                     </th>
                 </tr>
