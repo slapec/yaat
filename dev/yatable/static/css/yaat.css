@@ -2,64 +2,54 @@
     margin: 12px 0 12px 0;
 }
 
+.ya-wrap {
+    clear: both;
+}
+
 .ya-paging {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-    -o-user-select: none;
     user-select: none;
 }
 
 .ya-headers li {
-    cursor: move;
+    cursor: move
 }
 
 .ya-hide {
-    visibility: hidden;
-    opacity: 0.3;
-    cursor: pointer;
-    margin: 0 4px 0 4px!important;
+    display: none!important
 }
 
-.ya-hide::before {
+.ya-hide:disabled + label {
+    cursor: not-allowed;
+}
+
+.ya-hide + label {
+    cursor: pointer
+}
+
+.ya-hide + label::before {
     content: '\e106';
-    visibility: visible;
-}
-
-.ya-hide:disabled::before {
-    visibility: hidden;
-}
-
-.ya-hide:checked {
-    opacity: 1;
-}
-
-.ya-sort {
-    visibility: hidden;
-    float: right;
     opacity: 0.3;
+}
+
+.ya-hide:checked + label::before {
+    opacity: 1
+}
+
+.ya-sort-btn {
+    float: right;
     cursor: pointer;
-    margin-top: 1px!important;
+    margin: 2px 0 0 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-.ya-sort::before {
-    content: '\e150';
-    visibility: visible;
-}
-
-.ya-sort:indeterminate {
-    opacity: 1;
-}
-
-.ya-sort:indeterminate::before {
-    content: '\e155';
-}
-
-.ya-sort:checked {
-    opacity: 1;
-}
-
-.ya-sort:checked::before {
-    content: '\e156';
-    opacity: 1;
+.ya-unsorted {
+    opacity: 0.3;
 }

@@ -15,8 +15,6 @@
     <!-- <script src="{% static 'js/yaat-full.min.js' %}"></script> -->
 </head>
 <body ng-app="yaat">
-    <!-- TODO: Split examples to separate files -->
-    <h1>Imperative example (with filter form)</h1>
     <script>
         var app = angular.module('yaat');
         app.controller('FilterForm', ['$scope', function($scope){
@@ -46,27 +44,20 @@
 
             self.limit = 10;
         }]);
-
-        app.controller('Imperative', ['$scope', function($scope){
-            $scope.$limit = 5;
-            $scope.$noDropdown = true;
-        }]);
     </script>
     <form ng-controller="FilterForm as filter">
+        <h1>Declarative example (with Bootstrap template)</h1>
         <div>
-            <input type="text" ng-model="model.search">
+            <label for="search">Filter:</label>
+            <input id="search" type="text" ng-model="model.search">
             <button ng-click="filter.filter()">Filter</button>
             Note: Server-side filtering is not implemented yet. See the raw network traffic.
         </div>
         <div>
-            Limit: <input type="number" ng-model="filter.limit">
+            <label for="limit">Limit:</label>
+            <input id="limit" type="number" ng-model="filter.limit" min="0">
         </div>
-        <yat ng-controller="Imperative" limit="filter.limit"></yat>
+        <yat api="{% url 'api:api' %}" template="yatable/bootstrap_table.html" limit="filter.limit"></yat>
     </form>
-
-    <hr>
-
-    <h1>Declarative example (using Bootstrap template)</h1>
-    <yat api="{% url 'api:api' %}" template="yatable/bootstrap_table.html"></yat>
 </body>
 </html>

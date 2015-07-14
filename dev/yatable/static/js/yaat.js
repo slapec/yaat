@@ -250,14 +250,3 @@ angular.module('yaat', [])
         }
     }
 }])
-.directive('ngIndeterminate', function($compile) {
-    // Source: http://stackoverflow.com/a/22144570/1069572
-    return {
-        restrict: 'A',
-        link: function(scope, element, attributes) {
-            scope.$watch(attributes['ngIndeterminate'], function(value){
-                element.prop('indeterminate', !!value);
-            });
-        }
-    };
-});

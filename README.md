@@ -222,7 +222,6 @@ However there are some variables you must use to hold the values to be rendered:
     Leave `"order"` or `"hidden"` keys out to prevent the column to be ordered or hidden.
     When the `"order"` key is missing the `"unorderable": true` key will be added to the column.
     When the `"hidden"` key is missing the `"unhideable": true` key will be added to the column.
-    
     These are client-side keys only so they will not be sent in any `POST`.
     
 -   `$scope.$visibleHeaders`: This array contains every visible header. Contained object
