@@ -1,16 +1,16 @@
 .ya-ctrls {
-    margin: 12px 0 12px 0;
+    margin: 12px 0 12px 0
 }
 
 .ya-wrap {
-    clear: both;
+    clear: both
 }
 
 .ya-paging {
     -moz-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    user-select: none
 }
 
 .ya-headers li {
@@ -23,15 +23,17 @@
 
 .ya-hide:disabled + label {
     cursor: not-allowed;
+    opacity: 0
 }
 
 .ya-hide + label {
-    cursor: pointer
+    cursor: pointer;
+    margin: 0 4px
 }
 
 .ya-hide + label::before {
     content: '\e106';
-    opacity: 0.3;
+    opacity: 0.3
 }
 
 .ya-hide:checked + label::before {
@@ -47,9 +49,9 @@
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    user-select: none
 }
 
 .ya-unsorted {
-    opacity: 0.3;
+    opacity: 0.3
 }

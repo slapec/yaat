@@ -1,4 +1,4 @@
-/* Created: Tue Jul 14 2015 12:11:32 GMT+0200 (CEST)*/
+/* Created: Tue Jul 14 2015 13:33:47 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -106,7 +106,7 @@ angular.module('yaat', [])
     if($scope.getKey === undefined){
         $scope.getKey = function(idx){
             // This is useful for generating column css class
-            return $scope.$headers[idx].key;
+            return $scope.$visibleHeaders[idx].key;
         }
     }
 

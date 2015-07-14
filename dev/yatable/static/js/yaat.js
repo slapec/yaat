@@ -105,7 +105,7 @@ angular.module('yaat', [])
     if($scope.getKey === undefined){
         $scope.getKey = function(idx){
             // This is useful for generating column css class
-            return $scope.$headers[idx].key;
+            return $scope.$visibleHeaders[idx].key;
         }
     }
 
