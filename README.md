@@ -421,7 +421,11 @@ from templates.
 
 -   `$scope.getKey(index)`
 
-    It is just a shortcut of `$scope.$headers[index].key`.
+    It is just a shortcut of `$scope.$visibleHeaders[index].key`.
+    
+-   `$scope.$getIndex(key)`
+
+    Returns the index of the given column key from `$scope.$visibleHeaders`. 
 
 # TODO:
 

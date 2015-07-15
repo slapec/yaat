@@ -104,8 +104,13 @@ angular.module('yaat', [])
 
     if($scope.getKey === undefined){
         $scope.getKey = function(idx){
-            // This is useful for generating column css class
             return $scope.$visibleHeaders[idx].key;
+        }
+    }
+
+    if($scope.getIndex === undefined){
+        $scope.getIndex = function(key){
+            return $scope.$visibleHeadersReverse[key];
         }
     }
 
@@ -118,6 +123,7 @@ angular.module('yaat', [])
     this.parse = function(data){
         var headers = [];
         var visibleHeaders = [];
+        var visibleHeadersReverse = {};
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
@@ -127,13 +133,16 @@ angular.module('yaat', [])
             if(header.hidden === undefined){
                 header.unhideable = true;
                 visibleHeaders.push(header);
+                visibleHeadersReverse[header.key] = i;
             }
             else if(header.hidden === false){
                 visibleHeaders.push(header);
+                visibleHeadersReverse[header.key] = i;
             }
         }
         $scope.$headers = headers;
         $scope.$visibleHeaders = visibleHeaders;
+        $scope.$visibleHeadersReverse = visibleHeadersReverse;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
         $scope.$offset = data.pages.list[data.pages.current].key;
