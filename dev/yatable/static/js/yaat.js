@@ -10,9 +10,11 @@ angular.module('yaat', [])
     $scope.$limit = $scope.$limit || 25;
     $scope.$offset = $scope.$offset || null;
     $scope.$noDropdown = $scope.$noDropdown || false;
+    $scope.$noControls = $scope.$noControls || false;
     $scope.$untouchedOffset = $scope.$offset;
 
     // Template URLs -----------------------------------------------------------
+    $scope.$ctrlsTemplate = $scope.$ctrlsTemplate || 'yatable/ctrls.html';
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
     $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
@@ -225,7 +227,11 @@ angular.module('yaat', [])
             }
 
             if(attrs.nodropdown !== undefined){
-                scope.$noDropdown = true
+                scope.$noDropdown = true;
+            }
+
+            if(attrs.nocontrols !== undefined){
+                scope.$noControls = true;
             }
 
             // Sortable setup --------------------------------------------------
@@ -248,14 +254,22 @@ angular.module('yaat', [])
                 }
             }
 
-            var headerList = $(element).find('.ya-headers');
-            headerList.disableSelection();
-            headerList.sortable(options);
+            var disable = scope.$on('$includeContentLoaded', function(e, url){
+                if(url === scope.$ctrlsTemplate || url === 'yatable/bootstrap_dropdown.html'){
+                    disable();
 
-            // To avoid the dropdown closing itself when clicking on a checkbox
-            $(document).on('click', '.dropdown-menu', function(e) {
-                e.stopPropagation();
+                    var headerList = $(element).find('.ya-headers');
+                    headerList.disableSelection();
+                    headerList.sortable(options);
+
+                    // To avoid the dropdown closing itself when clicking on a checkbox
+                    $(document).on('click', '.dropdown-menu', function(e) {
+                        e.stopPropagation();
+                    });
+                }
             });
+
+
         }
     }
-}])
+}]);

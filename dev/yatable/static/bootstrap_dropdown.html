@@ -1,0 +1,11 @@
+<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    [[ ::dropdownText ]]
+    <span class="caret"></span>
+</button>
+<ol class="ya-headers dropdown-menu" aria-labelledby="dropdownMenu">
+    <li ng-repeat="header in $headers" id="[[ ::header.key ]]">
+        <input id="hide-[[ ::header.key ]]" type="checkbox" class="glyphicon ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
+        <label for="hide-[[ ::header.key ]]" class="glyphicon"></label>
+        <span class="ya-header-value">[[ ::header.value ]]</span>
+    </li>
+</ol>

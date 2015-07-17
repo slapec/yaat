@@ -105,11 +105,15 @@ where you can customize the behaviour of the directive:
     Required row count. This value can either be a constant or a model. Default value: `25`.
     Current value is stored in `$scope.$limit`. This value is watched so you can set the
     visible row count dynamically.
+    
+-   `nocontrols`
+    To hide the `.ya-ctrl` `<div>` use this attribute. The value is not stored but if the 
+    attribute is exitst the `$scope.$noControls` is set to `true`. Default value: `false`.
 
 -   `nodropdown`
 
     Use this attribute if you wish to hide the dropdown. The value of the attribute is not stored
-    but when the attribute exists the `$scope.$noDropdown` is set to `true`. Default value: `false`.
+    but if the attribute exists the `$scope.$noDropdown` is set to `true`. Default value: `false`.
     
 -   `dropdownText`
 
@@ -338,14 +342,14 @@ so some data of the filter should be passed during paging).
 
 Yaat comes with 2 themes built-in:
 
-- The `standard` theme which is basically empty (it is the default).
-- The `bootstrap` theme which uses Twitter's [Bootstrap](http://getbootstrap.com/).
+- The standard theme which uses Twitter's [Bootstrap](http://getbootstrap.com/).
+- The simple theme which is basically empty (it is the default) (**outdated**).
 
-See the template (`dev/yatable/static/table.html`) for standard theme details.
+See the templates (`dev/yatable/static/bootstrap_table.html` and `dev/yatable/static/table.html`) for details.
 
 ### Dynamic CSS classes
 
-There are some dynamic classes in the standard template:
+There are some dynamic classes in both the standard and bootstrap theme:
 
 -   `"yh-{{ header.key }}"`
 
@@ -357,7 +361,7 @@ There are some dynamic classes in the standard template:
     Table body cells always have their column header key (`header.key`) as CSS class prepended with `"yc-"`.
     You can use it for full column styling.
     
-## Overriding templates
+## Overriding the standard template
 
 It it also possible to override the whole template or just pieces of it. It is very easy
 using Angular's [script based template caching](https://docs.angularjs.org/api/ng/service/$templateCache).
@@ -370,7 +374,7 @@ Example:
 </script>
 ```
 
-List of default templates:
+List of default templates (**outdated**):
 
 -   `yatable/row.html`
 
@@ -395,6 +399,10 @@ should use different templates than others then you can override the template UR
 too.
 
 Available template URLs in the scope:
+
+-   `$ctrlsTemplate`
+
+    URL of the template of table's control area. Rendered content goes into `.ya-ctrls`.
 
 -   `$rowTemplate`
 
@@ -429,5 +437,4 @@ from templates.
 
 # TODO:
 
--   Moving `.ya-ctrls` into a template breaks sortable because sortable is initialized
-    in base template but the `ctrls` template is loaded later so initialization fails.
+-   Swap standard theme with bootstrap.
