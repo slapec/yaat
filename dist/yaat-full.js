@@ -1,4 +1,4 @@
-/* Created: Fri Jul 17 2015 13:04:28 GMT+0200 (CEST)*/
+/* Created: Tue Jul 21 2015 15:19:39 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -29,7 +29,7 @@ angular.module('yaat', [])
 
     $scope.$watch('$limit', function(newValue, oldValue){
         if(newValue !== oldValue){
-            $scope.update();
+            $scope.init($scope.$api);
         }
     });
 
