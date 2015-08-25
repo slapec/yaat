@@ -28,7 +28,7 @@ angular.module('yaat', [])
 
     $scope.$watch('$limit', function(newValue, oldValue){
         if(newValue !== oldValue){
-            $scope.update();
+            $scope.init($scope.$api);
         }
     });
 
