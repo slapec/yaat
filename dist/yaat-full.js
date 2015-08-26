@@ -1,4 +1,4 @@
-/* Created: Tue Jul 21 2015 15:19:39 GMT+0200 (CEST)*/
+/* Created: Wed Aug 26 2015 11:51:17 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -127,6 +127,7 @@ angular.module('yaat', [])
         var headers = [];
         var visibleHeaders = [];
         var visibleHeadersReverse = {};
+        var visibleIndex = 0;
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
@@ -136,11 +137,11 @@ angular.module('yaat', [])
             if(header.hidden === undefined){
                 header.unhideable = true;
                 visibleHeaders.push(header);
-                visibleHeadersReverse[header.key] = i;
+                visibleHeadersReverse[header.key] = visibleIndex++;
             }
             else if(header.hidden === false){
                 visibleHeaders.push(header);
-                visibleHeadersReverse[header.key] = i;
+                visibleHeadersReverse[header.key] = visibleIndex++;
             }
         }
         $scope.$headers = headers;

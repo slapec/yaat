@@ -126,6 +126,7 @@ angular.module('yaat', [])
         var headers = [];
         var visibleHeaders = [];
         var visibleHeadersReverse = {};
+        var visibleIndex = 0;
         for(var i=0; i<data.columns.length; i++){
             var header = data.columns[i];
             headers.push(header);
@@ -135,11 +136,11 @@ angular.module('yaat', [])
             if(header.hidden === undefined){
                 header.unhideable = true;
                 visibleHeaders.push(header);
-                visibleHeadersReverse[header.key] = i;
+                visibleHeadersReverse[header.key] = visibleIndex++;
             }
             else if(header.hidden === false){
                 visibleHeaders.push(header);
-                visibleHeadersReverse[header.key] = i;
+                visibleHeadersReverse[header.key] = visibleIndex++;
             }
         }
         $scope.$headers = headers;
