@@ -1,9 +1,6 @@
-.ya-ctrls {
-    margin: 12px 0 12px 0
-}
-
 .ya-wrap {
-    clear: both
+    clear: both;
+    padding-top: 12px;
 }
 
 .ya-paging {
