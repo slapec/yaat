@@ -1,30 +1,21 @@
-<!-- This template is out of date -->
 <div class="yat">
-    <div class="ya-ctrls" ng-hide="$noDropdown">
-        <ul class="ya-drop">
-            <li>
-                <span class="ya-drop-label">[[ ::dropdownText ]]</span>
-                <ol class="ya-headers">
-                    <li ng-repeat="header in $headers" id="[[ ::header.key ]]">
-                    <input type="checkbox" class="ya-hide" ng-model="header.hidden" ng-disabled="header.unhideable" ng-click="update()">
-                    <span class="ya-header-value">[[ ::header.value ]]</span>
-                </ol>
-            </li>
-        </ul>
-    </div>
+    <div class="ya-ctrls" ng-hide="$noControls" ng-include="'yatable/controls.html'"></div>
     <div class="ya-wrap">
-        <table class="ya-table">
+        <table class="ya-table table table-bordered table-condensed table-customized table-striped">
             <thead>
                 <tr>
                     <th ng-repeat="header in $visibleHeaders" class="yh-[[ ::header.key ]]">
-                        <input type="checkbox" class="ya-sort" ng-model="header.desc" ng-disabled="header.unorderable" ng-click="update()">
                         [[ ::header.value ]]
+                        <span ng-switch on="header.order" ng-click="toggleSorting(header)" class="ya-sort-btn">
+                            <i ng-switch-when="0" class="glyphicon glyphicon-sort ya-unsorted"></i>
+                            <i ng-switch-when="1" class="glyphicon glyphicon-sort-by-attributes"></i>
+                            <i ng-switch-when="2" class="glyphicon glyphicon-sort-by-attributes-alt"></i>
+                        </span>
                     </th>
                 </tr>
             </thead>
-            <tbody ng-include="$rowTemplate">
-            </tbody>
+            <tbody ng-include="$rowTemplate"></tbody>
         </table>
     </div>
-    <nav class="ya-paging" ng-include="$pagingTemplate"></nav>
+    <nav class="ya-paging text-center" ng-include="'yatable/paging.html'"></nav>
 </div>

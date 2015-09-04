@@ -1,39 +1,28 @@
 # Yaat - yet another angularjs table
 
-Created for full server-side processing
-
-## Build
-
-Node.js is require to build the module:
-
-1. `npm install`
-2. `npm test`
-
-Build result will be placed in `dist/` and in `dev/yatable/static/js`.
-
-## Development
-
-Source is located in `dev/yatable/static/js/yaat.js`.
-
-### Development server
-
-A simple Django development project can be found in `dev/`.
-It's been developed in Python 3.4.2 (but it should work in Python 2.x) 
-
-1. `pip install -r requirements`
-2. `python dev/manage.py runserver`
+Yaat is a *yet another AngularJS table* but it uses server-side processing only. It is suitable for systems where
+live HTML tables are required with column reordering, hiding, data sorting and paging. It is using Bootstrap
+for its styling so it doesn't try to reinvent the wheel.
 
 ## Usage
 
-Use the `<yat>` directive to create a pretty table.
+1. Yaat uses some 3rd-party libraries. Hope you've already using some of them. These are:
+    - jQuery
+    - jQuery-UI
+    - Bootstrap
+    - AngularJS
+
+2. Don't forget to include `yaat-full.min.js` as well!
+3. Yaat registers the `yaat` module. Either use it directly as an angularjs app or create your own module which depends on this.
+4. Use the `<yat>` directive to create a pretty table.
 
 ## API
 
 ### Declarative
 
 Use the declarative API if the built-in logic (HTTP loading, table rendering, column
-hiding and ordering, paging) suits your needs. In this case you still have some attributes
-where you can customize the behaviour of the directive:
+hiding and ordering, paging) suits your needs. In this case you still have some
+HTML attributes where you can customize the behaviour of the directive:
 
 -   `api`
 
@@ -41,10 +30,10 @@ where you can customize the behaviour of the directive:
     value is stored in `$scope.$api` and it is also watched so changing it dynamically
     causes table reload.
     
-    Yaat sends a single `HTTP POST` with empty body on initialization.
+    Yaat sends a single `HTTP POST` with initialization data (see later).
     You must always return the following structure:
     
-    ```
+    ```javascript
     {
         "columns": [
             {
@@ -85,20 +74,21 @@ where you can customize the behaviour of the directive:
     `1` is for ascending and `2` is for descending order.
     
     Leave `"order"` or `"hidden"` keys out if you don't wish to let the user change their
-    value (rendered checkboxes become `disabled`).
+    value (their toggle buttons will not be rendered).
     
     `rows` contains every result rows. `id` field should be unique for each row
-    (so you should use some primary key here). `values` contains the actual row cells.
+    (so you should use some primary key here). `values` array contains the actual row cells.
     
-    `pages.list` object contains pages as list. `key` is used as
-    page offset (passed to `$scope.loadPage()`) and `value` is its rendered value.
-    `pages.current` is the index of the current page in the `pages.list` list. It is
+    `pages.list` object contains pages as an array. In it the `key` is used as
+    page offset (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
+    `pages.current` is the index of the current page in the `pages.list` array. It is
     rendered non-clickable.
     
 -   `offset`
     
-    Start page number (or any string). Value is stored in `$scope.$offset`. This value is
-    sent in initialization `POST` only. Default value: `null`.
+    Start page number (or any string). Value is stored in `$scope.$offset` and in `$scope.$untouchedOffset` (which is always the value used for initialization).
+    On table init the `$scope.$untouchedOffset` is `POST`ed
+    On paging the `$scope.$offset` is sent. Default value: `null`.
 
 -   `limit`
 
@@ -125,22 +115,26 @@ where you can customize the behaviour of the directive:
     This is the template url of the `yat` directive which will be used to render the template.
     Default value: `yatable/table.html`.
     See `Overriding templates` section for more.
-  
     
-> Note: Declared attributes have the priority than imperative (scope) ones.
+-   `id`
 
-#### `POST`s
+    The value of `id` attribute is stored in `$scope.$yaatId`. This is useful for event identification and targeting events to exact table instances.
+  
+> Note: Declared attributes have higher priority than imperative (scope) ones.
+
+#### `POST`
 
 On initialization the following object is `POST`ed:
 
-```
+```javascript
 {
     "offset": $scope.$offset,
     "limit": $scope.$limit
 }
 ```
 
-After then this structure is used:
+You can reply with the header and the row list to this. After the table knows its headers it always sends
+their state too. So the structure after initialization is this:
 
 ```
 {
@@ -156,12 +150,16 @@ After then this structure is used:
 }
 ```
 
+You should observe property changes and header differences and reply with the required data. However the
+table is always rebuilt from scratch meaning that you can deny property changes if you want. The table
+always reflects the data it have received.
+
 ### Imperative
 
 It is possible to override the default behaviour completely by passing a controller to the
 `<yat>` directive.
 
-```
+```html
 <script>
     var app = angular.module('yaat');
     app.controller('ImperativeExample', ['$scope', function($scope){
@@ -184,13 +182,12 @@ your own algorithms but you still want to stick to the original program flow:
 
 -   `$scope.init(url)`
 
-    This method is called when the value of `$scope.$api` is initialized or changed. New value of
-    `$api` is passed.
+    This method is called when the value of `$scope.$api` is initialized or changed, the value of `$scope.$limit` is changed or `yaat.init` event is received. New value of `$api` is passed as `url`.
 
 -   `$scope.update(sortable)`
 
-    This method is called when any table update is required (hide/sort checkbox or
-    column order changed). When column order is changed the `sortable` element is
+    This method is called when any table update is required (hide/sort state or
+    column order changed) or `yaat.update` event is received. When column order is changed the `sortable` element is
     passed so you can sync the header order (when no ordering made this argument is
     `undefined`).
     
@@ -210,7 +207,7 @@ However there are some variables you must use to hold the values to be rendered:
 -   `$scope.$headers`: This array contains every available column header. Contained object
     structure must be this:
 
-    ```
+    ```javascript
     [
         {
             "key": <string>,
@@ -237,7 +234,7 @@ However there are some variables you must use to hold the values to be rendered:
 -   `$scope.$rows`: This array contains every result row object. The structure must be 
      this:
     
-    ```
+    ```javascript
     [
         {
             "id": <string>
@@ -252,10 +249,10 @@ However there are some variables you must use to hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
--   `$scope.$pages`: This object contains a page list and the index of the current page
-    in the page list. Expected structure:
+-   `$scope.$pages`: This object contains a page array and the index of the current page
+    in that array. Expected structure:
     
-    ```
+    ```javascript
     {
         "current": <string>,
         "list": [
@@ -275,12 +272,11 @@ reordering but you must use the imperative method described above.
 
 -   `$scope.$sortableOptions`: Use this property to pass your object.
     
-    When no update handler is in the object the default handler will be used
-    (see the next section for details).
+    When no update handler is in the object the default handler will be used.
     
 #### The default behaviour:
 
-```
+```javascript
 {
     axis: 'y',
     containment: 'parent',
@@ -310,18 +306,35 @@ so some data of the filter should be passed during paging).
 
 ### Events that Yaat is listening to
     
--   `yaat.init`
+-   `yaat.init(api, [target])`
 
-    This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`).
+    This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`). You can pass the
+    id of the target table optionally.
     
--   `yaat.update`
+-   `yaat.update([target])`
 
-    This event calls `$scope.update()`
+    This event calls `$scope.update()` You can pass the
+    id of the target table optionally.
     
--   `yaat.http.extra`
+-   `yaat.http.add(key, model, [target])`
 
-    This event is used to set some extra data which should be sent on every `POST`.
-    Event data will have the key `"extra"` in the `POST`.
+    You can use this event to add models which should also be
+    sent along with Yaat's own data. This is useful when the
+    table is a child of a parent controller (like a filter form).
+    You can pass the id of the target table optionally.
+    
+    The keys will be added to the `POST` so you must not use
+    reserved `POST` keys (`offset`, `limit` and `headers`).
+    To be sure an error is thrown on conflict.
+    
+-   `yaat.http.remove(key, [target])`
+
+    Use this event to remove a model previously added to be
+    sent along with Yaat's own data. You can pass the id of
+    the target table optinally.
+    
+    The internal reference of the model is going to be deleted.
+
 
 ### Events that Yaat is emitting
 
@@ -337,29 +350,32 @@ so some data of the filter should be passed during paging).
 
     This event is emitted when the `POST` fails. Passed arguments: `data` (error reply), 
     `status` (code), `headers`, `config`.
+    
+Because the sender scope is received in the event object you
+can filter event sources by `$yaatId`.
 
-## Themes
-
-Yaat comes with 2 themes built-in:
-
-- The standard theme which uses Twitter's [Bootstrap](http://getbootstrap.com/).
-- The simple theme which is basically empty (it is the default) (**outdated**).
-
-See the templates (`dev/yatable/static/bootstrap_table.html` and `dev/yatable/static/table.html`) for details.
+```javascript
+$scope.$on('yaat.ready', function(e){
+    if(e.targetScope.$yaatId === 'someTable'){
+        doSomething();
+    }
+});
+```
 
 ### Dynamic CSS classes
 
-There are some dynamic classes in both the standard and bootstrap theme:
+There are some dynamic classes to help customizing the rendered
+table. These are:
 
 -   `"yh-{{ header.key }}"`
 
-    Table header cells always have their own `header.key` as CSS class prepended with `"yh-"`. This can be
-    useful for setting column width.
+    Table header cells always have their own `header.key` as class prepended with `"yh-"`. This can be useful for setting
+    column width.
     
 -   `"yc-{{ getKey($index) }}"`
 
     Table body cells always have their column header key (`header.key`) as CSS class prepended with `"yc-"`.
-    You can use it for full column styling.
+    It is helpful for highlighting a whole column.
     
 ## Overriding the standard template
 
@@ -374,24 +390,41 @@ Example:
 </script>
 ```
 
-List of default templates (**outdated**):
+-   `yatable/table.html`
+
+    This is the default base template of the rendered table. It
+    includes the control area, renders the table header and rows
+    and includes the paging area.
+
+- `yatable/controls.html`
+
+    This is the control area of the table. You should place buttons
+    and links which are related to the rendered data here. (e.g.:
+    select all, print, etc). Rendered content is in `.ya-ctrls`.
+    
+- `yatable/dropdown.html`
+
+    This piece contains the dropdown (which is in the control are).
+    In this list you can reorder the columns, show or hide them
+    and sort their content.
+    The button is pulled to the right.
 
 -   `yatable/row.html`
 
-    This template includes the declaration of the `<tr></tr>` element used inside
+    This template includes the declaration of the `<tr></tr>`
+    element used inside
     the `<tbody></tbody>` section of the rendered table.
+    Overriding this template is extremely useful when you want
+    to render a cell value different than others.
     
 -   `yatable/paging.html`
 
-    This template includes the paging footer right after the `<table>`. It's rendered in
-    `.ya-paging`.
+    This template includes the paging footer right after the
+    `<table>`. It's rendered in `.ya-paging`.
 
--   `yatable/table.html`
 
-    This is the default base template of the rendered table.
-    
 > See `dev/yatable/static/*.html` for implementations.
-    
+
 ### Per-table templates
 
 In case you need more than one instances of `<yat>` on the same page but one (or many)
@@ -400,32 +433,38 @@ too.
 
 Available template URLs in the scope:
 
--   `$ctrlsTemplate`
+-   `$controlsTemplate`
 
-    URL of the template of table's control area. Rendered content goes into `.ya-ctrls`.
+    URL of the template of table's control area. Rendered content goes into 
+    `.ya-ctrls`.
+    
+    Default: `yatable/row.html` 
 
 -   `$rowTemplate`
 
-    URL of the template of `<tr></tr>` element used inside the `<tbody></tbody>` section of the
-    rendered table. 
+    URL of the template of `<tr></tr>` element used inside the <tbody></tbody>`
+    section of the rendered table. 
     
     Default: `yatable/row.html`
 
 -   `$pagingTemplate`
 
-    URL of the template of table's paging footer. Rendered content goes into `.ya-paging`.
-     
-#### `yatable/table.html`
-You can't override this URL in imperative mode because the `<yat>` directive gets access to
-its own (and its parents') scope after the template is fetched. So you have to pass this URL as
-an argument:
+    URL of the template of table's paging footer. Rendered content goes into 
+    `.ya-paging`.
+    
+    Default: `yatable/paging.html`
+
+#### Overriding the whole template
+You can't override this URL in imperative mode because the `<yat>` directive
+gets access to its own (and its parents') scope after the template is fetched.
+So you have to pass this URL as an argument:
 
 `<yat api="/api/" template="custom-template.html">`
 
 ### Scope API
-You can access all scope methods and objects in your templates listed above of course.
-However there are some methods which haven't been mentioned yet. They are usually accessed
-from templates.
+You can access all scope methods and objects in your templates listed above
+of course. However there are some methods which haven't been mentioned yet.
+They are usually accessed from templates.
 
 -   `$scope.getKey(index)`
 
@@ -435,6 +474,23 @@ from templates.
 
     Returns the index of the given column key from `$scope.$visibleHeaders`. 
 
-# TODO:
+## Build
 
--   Swap standard theme with bootstrap.
+Node.js is require to build the module:
+
+1. `npm install`
+2. `npm test`
+
+Build result will be placed in `dist/` and in `dev/yatable/static/js`.
+
+## Development
+
+Source is located in `dev/yatable/static/js/yaat.js`.
+
+### Development server
+
+A simple Django development project can be found in `dev/`.
+It's been developed in Python 3.4.2 (but it should work in Python 2.x) 
+
+1. `pip install -r requirements`
+2. `python dev/manage.py runserver`
