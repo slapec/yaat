@@ -11,10 +11,12 @@ angular.module('yaat', [])
     $scope.$offset = $scope.$offset || null;
     $scope.$noDropdown = $scope.$noDropdown || false;
     $scope.$noControls = $scope.$noControls || false;
+    $scope.$yaatId = $scope.$yaatId || null;
     $scope.$untouchedOffset = $scope.$offset;
+    $scope.$postExtra = {};
 
     // Template URLs -----------------------------------------------------------
-    $scope.$ctrlsTemplate = $scope.$ctrlsTemplate || 'yatable/ctrls.html';
+    $scope.$controlsTemplate = $scope.$controlsTemplate || 'yatable/controls.html';
     $scope.$rowTemplate = $scope.$rowTemplate || 'yatable/row.html';
     $scope.$pagingTemplate = $scope.$pagingTemplate || 'yatable/paging.html';
 
@@ -33,29 +35,43 @@ angular.module('yaat', [])
     });
 
     // Events ------------------------------------------------------------------
-    $scope.$on('yaat.http.extra', function(e, args){
-        $scope.$httpExtra = args;
-    });
-
-    $scope.$on('yaat.init', function(e, api){
-        if($scope.$api === api){
-            $scope.init($scope.$api);
+    $scope.$on('yaat.http.post.add', function(e, key, model, target){
+        if(target === undefined || target == $scope.$yaatId){
+            if(key === 'offset' || key === 'limit' || key === 'headers'){
+                throw Error("Key '" + key + "' conflicts with the internals of yaat");
+            }
+            else {
+                $scope.$postExtra[key] = model;
+            }
         }
-        $scope.$api = api;
     });
 
-    $scope.$on('yaat.update', function(){
-        $scope.update();
+    $scope.$on('yaat.http.post.remove', function(e, key, model, target){
+        if(target === undefined || target == $scope.$yaatId){
+            delete $scope.$postExtra[key];
+        }
+    });
+
+    $scope.$on('yaat.init', function(e, api, target){
+        if(target === undefined || target == $scope.$yaatId){
+            if($scope.$api === api){
+                $scope.init($scope.$api);
+            }
+            $scope.$api = api;
+        }
+    });
+
+    $scope.$on('yaat.update', function(e, target){
+        if(target === undefined || target === $scope.$yaatId){
+            $scope.update();
+        }
     });
 
     // Scope methods -----------------------------------------------------------
     if($scope.init === undefined){
         $scope.init = function(url){
             if(url !== undefined) {
-                var payload = self.initPayload();
-                if($scope.$httpExtra !== undefined){
-                    payload.extra = $scope.$httpExtra;
-                }
+                var payload = angular.extend({}, self.initPayload(), $scope.$postExtra);
                 $http({
                     method: 'POST',
                     url: url,
@@ -76,11 +92,7 @@ angular.module('yaat', [])
                 self.applyOrder(sortable);
             }
 
-            var payload = self.getPayload();
-
-            if($scope.$httpExtra !== undefined){
-                payload.extra = $scope.$httpExtra;
-            }
+            var payload = angular.extend({}, self.getPayload(), $scope.$postExtra);
 
             $http({
                 method: 'POST',
@@ -191,9 +203,6 @@ angular.module('yaat', [])
             headers: clean
         }
     };
-
-    // Ready to receive events -------------------------------------------------
-    $scope.$emit('yaat.ready');
 }])
 .directive('yat', [function(){
     return {
@@ -235,6 +244,10 @@ angular.module('yaat', [])
                 scope.$noControls = true;
             }
 
+            if(attrs.id !== undefined){
+                scope.$yaatId = attrs.id;
+            }
+
             // Sortable setup --------------------------------------------------
             var updateHandler = function(){
                 scope.update(this)
@@ -256,7 +269,7 @@ angular.module('yaat', [])
             }
 
             var disable = scope.$on('$includeContentLoaded', function(e, url){
-                if(url === scope.$ctrlsTemplate || url === 'yatable/bootstrap_dropdown.html'){
+                if(url === 'yatable/dropdown.html'){
                     disable();
 
                     var headerList = $(element).find('.ya-headers');
@@ -270,7 +283,8 @@ angular.module('yaat', [])
                 }
             });
 
-
+            // Ready to receive events -------------------------------------------------
+            scope.$emit('yaat.ready');
         }
     }
 }]);
