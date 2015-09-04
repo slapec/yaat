@@ -21,10 +21,10 @@
             var self = this;
             $scope.model = {};
 
-            $scope.$on('yaat.ready', function(){
+            $scope.$on('yaat.ready', function(e){
                 $scope.model.search = 'asd';
 
-                $scope.$broadcast('yaat.http.extra', $scope.model);
+                $scope.$broadcast('yaat.http.post.add', 'filter', $scope.model);
                 $scope.$broadcast('yaat.init', "{% url 'api:api' %}");
 
                 $scope.$watch('model', function(newValue, oldValue){
@@ -57,7 +57,7 @@
             <label for="limit">Limit:</label>
             <input id="limit" type="number" ng-model="filter.limit" min="0">
         </div>
-        <yat api="{% url 'api:api' %}" template="yatable/bootstrap_table.html" limit="filter.limit"></yat>
+        <yat id="testTable" api="{% url 'api:api' %}" limit="filter.limit"></yat>
     </form>
 </body>
 </html>

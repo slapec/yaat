@@ -29,12 +29,11 @@
 }
 
 .ya-hide + label::before {
-    content: '\e106';
-    opacity: 0.3
+    content: '\e105';
 }
 
 .ya-hide:checked + label::before {
-    opacity: 1
+    opacity: 0.25
 }
 
 .ya-sort-btn {
