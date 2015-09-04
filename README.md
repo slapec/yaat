@@ -367,12 +367,12 @@ $scope.$on('yaat.ready', function(e){
 There are some dynamic classes to help customizing the rendered
 table. These are:
 
--   `"yh-{{ header.key }}"`
+-   `"yh-[[ header.key ]]"`
 
     Table header cells always have their own `header.key` as class prepended with `"yh-"`. This can be useful for setting
     column width.
     
--   `"yc-{{ getKey($index) }}"`
+-   `"yc-[[ getKey($index) ]]"`
 
     Table body cells always have their column header key (`header.key`) as CSS class prepended with `"yc-"`.
     It is helpful for highlighting a whole column.
