@@ -1,6 +1,7 @@
 {
   "name": "yaat",
-  "description": "yet another angularjs table",
+  "version": "1.0.0",
+  "description": "yet another angularjs table for server-side processing",
   "scripts": {
     "test": "gulp"
   },
@@ -17,5 +18,13 @@
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "github:/slapec/yaat"
+  },
+  "bugs": {
+    "url": "https://github.com/slapec/yaat/issues"
+  },
+  "license": "MIT"
 }
