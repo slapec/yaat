@@ -25,7 +25,7 @@ var templateFiles = [
 var mainFile = BASE + '/static/js/yaat.js';
 
 // Options --------------------------------------------------------------------
-var outFilename = 'yaat.js';
+var outFilename = 'yaat.full.js';
 var minifiedOutFilename = 'yaat.min.js';
 
 var cacheOptions = {
