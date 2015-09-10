@@ -81,7 +81,7 @@ HTML attributes where you can customize the behaviour of the directive:
     
     `pages.list` object contains pages as an array. In it the `key` is used as
     page offset (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
-    `pages.current` is the index of the current page in the `pages.list` array. It is
+    `pages.current` is the key of the current page in the `pages.list` array. It is
     rendered non-clickable.
     
 -   `offset`
@@ -249,7 +249,7 @@ However there are some variables you must use to hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
--   `$scope.$pages`: This object contains a page array and the index of the current page
+-   `$scope.$pages`: This object contains a page array and the key of the current page
     in that array. Expected structure:
     
     ```javascript
