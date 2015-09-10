@@ -12,7 +12,7 @@ var minifyCss = require('gulp-minify-css');
 
 // Paths ----------------------------------------------------------------------
 var BASE = 'dev/yatable';
-var DIST = 'dist/';
+var DIST = '.';
 
 var templateFiles = [
     BASE + '/static/table.html',
@@ -25,8 +25,8 @@ var templateFiles = [
 var mainFile = BASE + '/static/js/yaat.js';
 
 // Options --------------------------------------------------------------------
-var outFilename = 'yaat-full.js';
-var minifiedOutFilename = 'yaat-full.min.js';
+var outFilename = 'yaat.js';
+var minifiedOutFilename = 'yaat.min.js';
 
 var cacheOptions = {
     module: 'yaat',
