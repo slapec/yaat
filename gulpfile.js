@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 
+var meta = require('./package.json');
+
 var addStream = require('add-stream');
 var concat = require('gulp-concat');
 var expect = require('gulp-expect-file');
@@ -33,7 +35,10 @@ var cacheOptions = {
     root: 'yatable'
 };
 
-var prependString = '/* Created: ' + new Date() + '*/\n';
+var prependString = '/*\n';
+prependString += '    ' + meta.name + ' v' + meta.version + ' - https://github.com/slapec/yaat\n';
+prependString += '    build date: ' + new Date().toISOString() + '\n';
+prependString += '*/\n';
 
 // Tasks ----------------------------------------------------------------------
 

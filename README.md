@@ -4,7 +4,15 @@ Yaat is a *yet another AngularJS table* but it uses server-side processing only.
 live HTML tables are required with column reordering, hiding, data sorting and paging. It is using Bootstrap
 for its styling so it doesn't try to reinvent the wheel.
 
-## Usage
+# Install
+
+Simply with npm:
+
+`npm install yaat`
+
+Or just download the repository and bundle it in your project.
+
+# Usage
 
 1. Yaat uses some 3rd-party libraries. Hope you've already using some of them. These are:
     - jQuery
@@ -12,8 +20,9 @@ for its styling so it doesn't try to reinvent the wheel.
     - Bootstrap
     - AngularJS
 
-2. Don't forget to include `yaat-full.min.js` as well!
-3. Yaat registers the `yaat` module. Either use it directly as an angularjs app or create your own module which depends on this.
+2. Don't forget to include `yaat.min.js` and `yaat.css` files as well!
+3. Yaat registers the `yaat` module. Either use it directly as an AngularJS app or create your own module which depends
+    on this.
 4. Use the `<yat>` directive to create a pretty table.
 
 ## API
