@@ -160,7 +160,7 @@ angular.module('yaat', [])
         $scope.$visibleHeadersReverse = visibleHeadersReverse;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
-        $scope.$offset = data.pages.list[data.pages.current].key;
+        $scope.$offset = data.pages.current;
     };
 
     this.applyOrder = function(sortable){

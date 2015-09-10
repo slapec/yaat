@@ -1,4 +1,4 @@
-/* Created: Thu Sep 10 2015 09:01:10 GMT+0200 (CEST)*/
+/* Created: Thu Sep 10 2015 09:19:27 GMT+0200 (CEST)*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -161,7 +161,7 @@ angular.module('yaat', [])
         $scope.$visibleHeadersReverse = visibleHeadersReverse;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
-        $scope.$offset = data.pages.list[data.pages.current].key;
+        $scope.$offset = data.pages.current;
     };
 
     this.applyOrder = function(sortable){
