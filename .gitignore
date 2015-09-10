@@ -142,5 +142,5 @@ node_modules
 
 
 
-dev/yatable/static/js/yaat-full.js
-dev/yatable/static/js/yaat-full.min.js
+dev/yatable/static/js/yaat.full.js
+dev/yatable/static/js/yaat.min.js

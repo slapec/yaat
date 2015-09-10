@@ -1,6 +1,6 @@
 <ol class="pagination pagination-lg">
-    <li ng-repeat="page in $pages.list track by $index" ng-class="{'ya-prev': $first, 'ya-next': $last, 'ya-current active': $index==$pages.current}">
-        <a ng-click="loadPage(page.key)" ng-if="$index !== $pages.current">[[ page.value ]]</a>
-        <span ng-if="$index === $pages.current">[[ page.value ]]</span>
+    <li ng-repeat="page in $pages.list track by $index" ng-class="{'ya-prev': $first, 'ya-next': $last, 'ya-current active': page.key===$pages.current}">
+        <a ng-click="loadPage(page.key)" ng-if="page.key !== $pages.current">[[ page.value ]]</a>
+        <span ng-if="page.key === $pages.current">[[ page.value ]]</span>
     </li>
 </ol>

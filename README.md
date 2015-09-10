@@ -81,7 +81,7 @@ HTML attributes where you can customize the behaviour of the directive:
     
     `pages.list` object contains pages as an array. In it the `key` is used as
     page offset (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
-    `pages.current` is the index of the current page in the `pages.list` array. It is
+    `pages.current` is the key of the current page in the `pages.list` array. It is
     rendered non-clickable.
     
 -   `offset`
@@ -249,7 +249,7 @@ However there are some variables you must use to hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
--   `$scope.$pages`: This object contains a page array and the index of the current page
+-   `$scope.$pages`: This object contains a page array and the key of the current page
     in that array. Expected structure:
     
     ```javascript
@@ -384,7 +384,7 @@ using Angular's [script based template caching](https://docs.angularjs.org/api/n
 
 Example:
 
-```
+```html
 <script type="text/ng-template" id="yatable/row.html">
     <!-- Insert template code here -->
 </script>
@@ -455,13 +455,12 @@ Available template URLs in the scope:
     Default: `yatable/paging.html`
 
 #### Overriding the whole template
-You can't override this URL in imperative mode because the `<yat>` directive
-gets access to its own (and its parents') scope after the template is fetched.
-So you have to pass this URL as an argument:
+You have to pass this URLS as an argument because the directive gets access to its own (and its parents') scope after 
+the template is fetched so it's too later to declare it in the scope.
 
 `<yat api="/api/" template="custom-template.html">`
 
-### Scope API
+### Helper methods
 You can access all scope methods and objects in your templates listed above
 of course. However there are some methods which haven't been mentioned yet.
 They are usually accessed from templates.
@@ -483,14 +482,17 @@ Node.js is require to build the module:
 
 Build result will be placed in `dist/` and in `dev/yatable/static/js`.
 
+## Django integration
+
+There is a Django application named [django-yaat](https://github.com/slapec/django-yaat) (built on the top of 
+[django-restify-framework](https://github.com/lovasb/django-restify)) which helps you creating yaat-compatible
+resources easily.
+
 ## Development
 
 Source is located in `dev/yatable/static/js/yaat.js`.
 
 ### Development server
 
-A simple Django development project can be found in `dev/`.
-It's been developed in Python 3.4.2 (but it should work in Python 2.x) 
-
-1. `pip install -r requirements`
-2. `python dev/manage.py runserver`
+A simple Django development project can be found in `dev/`. It is not using django-yaat yet but I'm going to
+change this soon. Hope this is not going to affect the yaat directive itself.
