@@ -1,6 +1,6 @@
 /*
     yaat v1.0.0 - https://github.com/slapec/yaat
-    build date: 2015-09-10T09:35:48.380Z
+    build date: 2015-09-10T10:18:39.626Z
 */
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
