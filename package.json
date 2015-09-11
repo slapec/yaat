@@ -1,6 +1,6 @@
 {
   "name": "yaat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "yet another angularjs table for server-side processing",
   "files": ["yaat.css", "yaat.min.js"],
   "scripts": {
@@ -31,7 +31,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "github:/slapec/yaat"
+    "url": "https://github.com/slapec/yaat"
   },
   "bugs": {
     "url": "https://github.com/slapec/yaat/issues"
