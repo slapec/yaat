@@ -61,6 +61,12 @@ angular.module('yaat', [])
         }
     });
 
+    $scope.$on('yaat.reload', function(e, target){
+        if(target === undefined || target == $scope.$yaatId){
+            $scope.init($scope.$api);
+        }
+    });
+
     $scope.$on('yaat.update', function(e, target){
         if(target === undefined || target === $scope.$yaatId){
             $scope.update();

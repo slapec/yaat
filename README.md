@@ -315,17 +315,22 @@ so some data of the filter should be passed during paging).
 
 ### Events that Yaat is listening to
     
--   `yaat.init(api, [target])`
+-   `yaat.init(api [, target])`
 
     This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`). You can pass the
     id of the target table optionally.
     
 -   `yaat.update([target])`
 
-    This event calls `$scope.update()` You can pass the
-    id of the target table optionally.
+    This event calls `$scope.update()` You can pass the id of the target table optionally.
     
--   `yaat.http.add(key, model, [target])`
+-   `yaat.reload([target])`
+
+    This event is very similar to `yaat.update` except that you should use this after the table is already initialized.
+    When the table receives the event it sends its initial payload again. This is useful for cases where the data
+    is excepted to change.
+    
+-   `yaat.http.add(key, model [, target])`
 
     You can use this event to add models which should also be
     sent along with Yaat's own data. This is useful when the
@@ -336,7 +341,7 @@ so some data of the filter should be passed during paging).
     reserved `POST` keys (`offset`, `limit` and `headers`).
     To be sure an error is thrown on conflict.
     
--   `yaat.http.remove(key, [target])`
+-   `yaat.http.remove(key [, target])`
 
     Use this event to remove a model previously added to be
     sent along with Yaat's own data. You can pass the id of

@@ -1,6 +1,6 @@
 /*
-    yaat v1.0.0 - https://github.com/slapec/yaat
-    build date: 2015-09-10T10:18:39.626Z
+    yaat v1.0.1 - https://github.com/slapec/yaat
+    build date: 2015-09-15T12:27:17.027Z
 */
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
@@ -62,6 +62,12 @@ angular.module('yaat', [])
                 $scope.init($scope.$api);
             }
             $scope.$api = api;
+        }
+    });
+
+    $scope.$on('yaat.reload', function(e, target){
+        if(target === undefined || target == $scope.$yaatId){
+            $scope.init($scope.$api);
         }
     });
 
