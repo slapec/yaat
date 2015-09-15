@@ -1,6 +1,6 @@
 {
   "name": "yaat",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "yet another angularjs table for server-side processing",
   "files": ["yaat.css", "yaat.min.js"],
   "scripts": {
