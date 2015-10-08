@@ -1,6 +1,6 @@
 /*
-    yaat v1.0.1 - https://github.com/slapec/yaat
-    build date: 2015-09-15T12:27:17.027Z
+    yaat v1.0.3 - https://github.com/slapec/yaat
+    build date: 2015-10-08T09:51:02.536Z
 */
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
@@ -87,8 +87,8 @@ angular.module('yaat', [])
                     url: url,
                     data: payload
                 }).success(function(data) {
-                    $scope.$emit('yaat.http.success');
                     self.parse(data);
+                    $scope.$emit('yaat.http.success');
                 }).error(function(data, status, headers, config){
                     $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
@@ -109,8 +109,8 @@ angular.module('yaat', [])
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
-                $scope.$emit('yaat.http.success');
                 self.parse(data);
+                $scope.$emit('yaat.http.success');
             }).error(function(data, status, headers, config){
                 $scope.$emit('yaat.http.error', data, status, headers, config);
             });
@@ -171,6 +171,13 @@ angular.module('yaat', [])
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
         $scope.$offset = data.pages.current;
+
+        $scope.$customData = {};
+        angular.forEach(data, function(v, k){
+            if(k !== 'columns' && k !== 'rows' && k !== 'pages'){
+                $scope.$customData[k] = v;
+            }
+        })
     };
 
     this.applyOrder = function(sortable){

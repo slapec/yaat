@@ -83,8 +83,8 @@ angular.module('yaat', [])
                     url: url,
                     data: payload
                 }).success(function(data) {
-                    $scope.$emit('yaat.http.success');
                     self.parse(data);
+                    $scope.$emit('yaat.http.success');
                 }).error(function(data, status, headers, config){
                     $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
@@ -105,8 +105,8 @@ angular.module('yaat', [])
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
-                $scope.$emit('yaat.http.success');
                 self.parse(data);
+                $scope.$emit('yaat.http.success');
             }).error(function(data, status, headers, config){
                 $scope.$emit('yaat.http.error', data, status, headers, config);
             });
@@ -167,6 +167,13 @@ angular.module('yaat', [])
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
         $scope.$offset = data.pages.current;
+
+        $scope.$customData = {};
+        angular.forEach(data, function(v, k){
+            if(k !== 'columns' && k !== 'rows' && k !== 'pages'){
+                $scope.$customData[k] = v;
+            }
+        })
     };
 
     this.applyOrder = function(sortable){
