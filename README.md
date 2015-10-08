@@ -272,8 +272,14 @@ However there are some variables you must use to hold the values to be rendered:
         ],
     }
     ```
+    
+#### Sending and accessing non-Yaat data
 
-   
+It is fine to send custom key-value pairs in the POST replying to Yaat's request. These keys are
+going to be collected and stored in `$scope.$customData` scope variable. The value is populated
+at the end of reply parsing meaning that after receiving `yaat.http.success` you can access
+the latest values safely.
+
 ### Passing `sortable();` options
 
 It is possible to customize the behaviour of the sortable which is used for column
@@ -358,7 +364,7 @@ so some data of the filter should be passed during paging).
     
 -   `yaat.http.success`
 
-    Emitted when the last `POST` was successful.
+    Emitted when the last `POST` and its parsing was successful.
 
 -   `yaat.http.errors`
 
@@ -483,7 +489,7 @@ They are usually accessed from templates.
 
     It is just a shortcut of `$scope.$visibleHeaders[index].key`.
     
--   `$scope.$getIndex(key)`
+-   `$scope.getIndex(key)`
 
     Returns the index of the given column key from `$scope.$visibleHeaders`. 
 
