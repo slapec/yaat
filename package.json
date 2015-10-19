@@ -1,6 +1,8 @@
 {
   "name": "yaat",
-  "description": "yet another angularjs table",
+  "version": "1.0.3",
+  "description": "yet another angularjs table for server-side processing",
+  "files": ["yaat.css", "yaat.min.js"],
   "scripts": {
     "test": "gulp"
   },
@@ -17,5 +19,22 @@
     "gulp-notify": "^2.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0"
-  }
+  },
+  "keywords": [
+    "angular",
+    "table",
+    "server-side",
+    "columns",
+    "ordering",
+    "hide",
+    "show"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slapec/yaat"
+  },
+  "bugs": {
+    "url": "https://github.com/slapec/yaat/issues"
+  },
+  "license": "MIT"
 }

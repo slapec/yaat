@@ -4,7 +4,15 @@ Yaat is a *yet another AngularJS table* but it uses server-side processing only.
 live HTML tables are required with column reordering, hiding, data sorting and paging. It is using Bootstrap
 for its styling so it doesn't try to reinvent the wheel.
 
-## Usage
+# Install
+
+Simply with npm:
+
+`npm install yaat`
+
+Or just download the repository and bundle it in your project.
+
+# Usage
 
 1. Yaat uses some 3rd-party libraries. Hope you've already using some of them. These are:
     - jQuery
@@ -12,8 +20,9 @@ for its styling so it doesn't try to reinvent the wheel.
     - Bootstrap
     - AngularJS
 
-2. Don't forget to include `yaat-full.min.js` as well!
-3. Yaat registers the `yaat` module. Either use it directly as an angularjs app or create your own module which depends on this.
+2. Don't forget to include `yaat.min.js` and `yaat.css` files as well!
+3. Yaat registers the `yaat` module. Either use it directly as an AngularJS app or create your own module which depends
+    on this.
 4. Use the `<yat>` directive to create a pretty table.
 
 ## API
@@ -81,7 +90,7 @@ HTML attributes where you can customize the behaviour of the directive:
     
     `pages.list` object contains pages as an array. In it the `key` is used as
     page offset (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
-    `pages.current` is the index of the current page in the `pages.list` array. It is
+    `pages.current` is the key of the current page in the `pages.list` array. It is
     rendered non-clickable.
     
 -   `offset`
@@ -249,7 +258,7 @@ However there are some variables you must use to hold the values to be rendered:
     Length of each `"values"` array should match the length of `$scope.$visibleHeaders`
     so every cell have its column in the row.
     
--   `$scope.$pages`: This object contains a page array and the index of the current page
+-   `$scope.$pages`: This object contains a page array and the key of the current page
     in that array. Expected structure:
     
     ```javascript
@@ -263,8 +272,14 @@ However there are some variables you must use to hold the values to be rendered:
         ],
     }
     ```
+    
+#### Sending and accessing non-Yaat data
 
-   
+It is fine to send custom key-value pairs in the POST replying to Yaat's request. These keys are
+going to be collected and stored in `$scope.$customData` scope variable. The value is populated
+at the end of reply parsing meaning that after receiving `yaat.http.success` you can access
+the latest values safely.
+
 ### Passing `sortable();` options
 
 It is possible to customize the behaviour of the sortable which is used for column
@@ -306,17 +321,22 @@ so some data of the filter should be passed during paging).
 
 ### Events that Yaat is listening to
     
--   `yaat.init(api, [target])`
+-   `yaat.init(api [, target])`
 
     This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`). You can pass the
     id of the target table optionally.
     
 -   `yaat.update([target])`
 
-    This event calls `$scope.update()` You can pass the
-    id of the target table optionally.
+    This event calls `$scope.update()` You can pass the id of the target table optionally.
     
--   `yaat.http.add(key, model, [target])`
+-   `yaat.reload([target])`
+
+    This event is very similar to `yaat.update` except that you should use this after the table is already initialized.
+    When the table receives the event it sends its initial payload again. This is useful for cases where the data
+    is excepted to change.
+    
+-   `yaat.http.add(key, model [, target])`
 
     You can use this event to add models which should also be
     sent along with Yaat's own data. This is useful when the
@@ -327,7 +347,7 @@ so some data of the filter should be passed during paging).
     reserved `POST` keys (`offset`, `limit` and `headers`).
     To be sure an error is thrown on conflict.
     
--   `yaat.http.remove(key, [target])`
+-   `yaat.http.remove(key [, target])`
 
     Use this event to remove a model previously added to be
     sent along with Yaat's own data. You can pass the id of
@@ -344,7 +364,7 @@ so some data of the filter should be passed during paging).
     
 -   `yaat.http.success`
 
-    Emitted when the last `POST` was successful.
+    Emitted when the last `POST` and its parsing was successful.
 
 -   `yaat.http.errors`
 
@@ -384,7 +404,7 @@ using Angular's [script based template caching](https://docs.angularjs.org/api/n
 
 Example:
 
-```
+```html
 <script type="text/ng-template" id="yatable/row.html">
     <!-- Insert template code here -->
 </script>
@@ -455,13 +475,12 @@ Available template URLs in the scope:
     Default: `yatable/paging.html`
 
 #### Overriding the whole template
-You can't override this URL in imperative mode because the `<yat>` directive
-gets access to its own (and its parents') scope after the template is fetched.
-So you have to pass this URL as an argument:
+You have to pass this URLS as an argument because the directive gets access to its own (and its parents') scope after 
+the template is fetched so it's too later to declare it in the scope.
 
 `<yat api="/api/" template="custom-template.html">`
 
-### Scope API
+### Helper methods
 You can access all scope methods and objects in your templates listed above
 of course. However there are some methods which haven't been mentioned yet.
 They are usually accessed from templates.
@@ -470,7 +489,7 @@ They are usually accessed from templates.
 
     It is just a shortcut of `$scope.$visibleHeaders[index].key`.
     
--   `$scope.$getIndex(key)`
+-   `$scope.getIndex(key)`
 
     Returns the index of the given column key from `$scope.$visibleHeaders`. 
 
@@ -483,14 +502,17 @@ Node.js is require to build the module:
 
 Build result will be placed in `dist/` and in `dev/yatable/static/js`.
 
+## Django integration
+
+There is a Django application named [django-yaat](https://github.com/slapec/django-yaat) (built on the top of 
+[django-restify-framework](https://github.com/lovasb/django-restify)) which helps you creating yaat-compatible
+resources easily.
+
 ## Development
 
 Source is located in `dev/yatable/static/js/yaat.js`.
 
 ### Development server
 
-A simple Django development project can be found in `dev/`.
-It's been developed in Python 3.4.2 (but it should work in Python 2.x) 
-
-1. `pip install -r requirements`
-2. `python dev/manage.py runserver`
+A simple Django development project can be found in `dev/`. It is not using django-yaat yet but I'm going to
+change this soon. Hope this is not going to affect the yaat directive itself.

@@ -61,6 +61,12 @@ angular.module('yaat', [])
         }
     });
 
+    $scope.$on('yaat.reload', function(e, target){
+        if(target === undefined || target == $scope.$yaatId){
+            $scope.init($scope.$api);
+        }
+    });
+
     $scope.$on('yaat.update', function(e, target){
         if(target === undefined || target === $scope.$yaatId){
             $scope.update();
@@ -77,8 +83,8 @@ angular.module('yaat', [])
                     url: url,
                     data: payload
                 }).success(function(data) {
-                    $scope.$emit('yaat.http.success');
                     self.parse(data);
+                    $scope.$emit('yaat.http.success');
                 }).error(function(data, status, headers, config){
                     $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
@@ -99,8 +105,8 @@ angular.module('yaat', [])
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
-                $scope.$emit('yaat.http.success');
                 self.parse(data);
+                $scope.$emit('yaat.http.success');
             }).error(function(data, status, headers, config){
                 $scope.$emit('yaat.http.error', data, status, headers, config);
             });
@@ -160,7 +166,14 @@ angular.module('yaat', [])
         $scope.$visibleHeadersReverse = visibleHeadersReverse;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
-        $scope.$offset = data.pages.list[data.pages.current].key;
+        $scope.$offset = data.pages.current;
+
+        $scope.$customData = {};
+        angular.forEach(data, function(v, k){
+            if(k !== 'columns' && k !== 'rows' && k !== 'pages'){
+                $scope.$customData[k] = v;
+            }
+        })
     };
 
     this.applyOrder = function(sortable){

@@ -1,5 +1,7 @@
 var gulp = require('gulp');
 
+var meta = require('./package.json');
+
 var addStream = require('add-stream');
 var concat = require('gulp-concat');
 var expect = require('gulp-expect-file');
@@ -12,7 +14,7 @@ var minifyCss = require('gulp-minify-css');
 
 // Paths ----------------------------------------------------------------------
 var BASE = 'dev/yatable';
-var DIST = 'dist/';
+var DIST = '.';
 
 var templateFiles = [
     BASE + '/static/table.html',
@@ -25,15 +27,18 @@ var templateFiles = [
 var mainFile = BASE + '/static/js/yaat.js';
 
 // Options --------------------------------------------------------------------
-var outFilename = 'yaat-full.js';
-var minifiedOutFilename = 'yaat-full.min.js';
+var outFilename = 'yaat.full.js';
+var minifiedOutFilename = 'yaat.min.js';
 
 var cacheOptions = {
     module: 'yaat',
     root: 'yatable'
 };
 
-var prependString = '/* Created: ' + new Date() + '*/\n';
+var prependString = '/*\n';
+prependString += '    ' + meta.name + ' v' + meta.version + ' - https://github.com/slapec/yaat\n';
+prependString += '    build date: ' + new Date().toISOString() + '\n';
+prependString += '*/\n';
 
 // Tasks ----------------------------------------------------------------------
 

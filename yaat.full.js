@@ -1,4 +1,7 @@
-/* Created: Fri Sep 04 2015 17:25:22 GMT+0200 (CEST)*/
+/*
+    yaat v1.0.3 - https://github.com/slapec/yaat
+    build date: 2015-10-08T09:51:02.536Z
+*/
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('[[');
@@ -62,6 +65,12 @@ angular.module('yaat', [])
         }
     });
 
+    $scope.$on('yaat.reload', function(e, target){
+        if(target === undefined || target == $scope.$yaatId){
+            $scope.init($scope.$api);
+        }
+    });
+
     $scope.$on('yaat.update', function(e, target){
         if(target === undefined || target === $scope.$yaatId){
             $scope.update();
@@ -78,8 +87,8 @@ angular.module('yaat', [])
                     url: url,
                     data: payload
                 }).success(function(data) {
-                    $scope.$emit('yaat.http.success');
                     self.parse(data);
+                    $scope.$emit('yaat.http.success');
                 }).error(function(data, status, headers, config){
                     $scope.$emit('yaat.http.error', data, status, headers, config);
                 });
@@ -100,8 +109,8 @@ angular.module('yaat', [])
                 url: $scope.$api,
                 data: payload
             }).success(function(data){
-                $scope.$emit('yaat.http.success');
                 self.parse(data);
+                $scope.$emit('yaat.http.success');
             }).error(function(data, status, headers, config){
                 $scope.$emit('yaat.http.error', data, status, headers, config);
             });
@@ -161,7 +170,14 @@ angular.module('yaat', [])
         $scope.$visibleHeadersReverse = visibleHeadersReverse;
         $scope.$rows = data.rows;
         $scope.$pages = data.pages;
-        $scope.$offset = data.pages.list[data.pages.current].key;
+        $scope.$offset = data.pages.current;
+
+        $scope.$customData = {};
+        angular.forEach(data, function(v, k){
+            if(k !== 'columns' && k !== 'rows' && k !== 'pages'){
+                $scope.$customData[k] = v;
+            }
+        })
     };
 
     this.applyOrder = function(sortable){
@@ -289,8 +305,8 @@ angular.module('yaat', [])
         }
     }
 }]);
-angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/controls.html","<div class=\"dropdown\" ng-hide=\"$noDropdown\" ng-include=\"\'yatable/dropdown.html\'\"></div>");
-$templateCache.put("yatable/dropdown.html","<button class=\"btn btn-default dropdown dropdown-toggle pull-right\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">[[ ::dropdownText ]] <span class=\"caret\"></span></button><ol class=\"ya-headers dropdown-menu\" aria-labelledby=\"dropdownMenu\"><li ng-repeat=\"header in $headers\" id=\"[[ ::header.key ]]\"><input id=\"hide-[[ ::header.key ]]\" type=\"checkbox\" class=\"glyphicon ya-hide\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"><label for=\"hide-[[ ::header.key ]]\" class=\"glyphicon\"></label><span class=\"ya-header-value\">[[ ::header.value ]]</span></li></ol>");
-$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\" ng-hide=\"$noControls\" ng-include=\"\'yatable/controls.html\'\"></div><div class=\"ya-wrap\"><table class=\"ya-table table table-bordered table-condensed table-customized table-striped\"><thead><tr><th ng-repeat=\"header in $visibleHeaders\" class=\"yh-[[ ::header.key ]]\">[[ ::header.value ]] <span ng-switch on=\"header.order\" ng-click=\"toggleSorting(header)\" class=\"ya-sort-btn\"><i ng-switch-when=\"0\" class=\"glyphicon glyphicon-sort ya-unsorted\"></i> <i ng-switch-when=\"1\" class=\"glyphicon glyphicon-sort-by-attributes\"></i> <i ng-switch-when=\"2\" class=\"glyphicon glyphicon-sort-by-attributes-alt\"></i></span></th></tr></thead><tbody ng-include=\"$rowTemplate\"></tbody></table></div><nav class=\"ya-paging text-center\" ng-include=\"\'yatable/paging.html\'\"></nav></div>");
+angular.module("yaat").run(["$templateCache", function($templateCache) {$templateCache.put("yatable/table.html","<div class=\"yat\"><div class=\"ya-ctrls\" ng-hide=\"$noControls\" ng-include=\"\'yatable/controls.html\'\"></div><div class=\"ya-wrap\"><table class=\"ya-table table table-bordered table-condensed table-customized table-striped\"><thead><tr><th ng-repeat=\"header in $visibleHeaders\" class=\"yh-[[ ::header.key ]]\">[[ ::header.value ]] <span ng-switch on=\"header.order\" ng-click=\"toggleSorting(header)\" class=\"ya-sort-btn\"><i ng-switch-when=\"0\" class=\"glyphicon glyphicon-sort ya-unsorted\"></i> <i ng-switch-when=\"1\" class=\"glyphicon glyphicon-sort-by-attributes\"></i> <i ng-switch-when=\"2\" class=\"glyphicon glyphicon-sort-by-attributes-alt\"></i></span></th></tr></thead><tbody ng-include=\"$rowTemplate\"></tbody></table></div><nav class=\"ya-paging text-center\" ng-include=\"\'yatable/paging.html\'\"></nav></div>");
+$templateCache.put("yatable/controls.html","<div class=\"pull-right dropdown\" ng-hide=\"$noDropdown\" ng-include=\"\'yatable/dropdown.html\'\"></div>");
+$templateCache.put("yatable/dropdown.html","<button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">[[ ::dropdownText ]] <span class=\"caret\"></span></button><ol class=\"ya-headers dropdown-menu\" aria-labelledby=\"dropdownMenu\"><li ng-repeat=\"header in $headers\" id=\"[[ ::header.key ]]\"><input id=\"hide-[[ ::header.key ]]\" type=\"checkbox\" class=\"glyphicon ya-hide\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"><label for=\"hide-[[ ::header.key ]]\" class=\"glyphicon\"></label><span class=\"ya-header-value\">[[ ::header.value ]]</span></li></ol>");
 $templateCache.put("yatable/row.html","<tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values track by $index\" class=\"yc-[[ getKey($index) ]]\">[[ ::cell ]]</td></tr>");
-$templateCache.put("yatable/paging.html","<ol class=\"pagination pagination-lg\"><li ng-repeat=\"page in $pages.list track by $index\" ng-class=\"{\'ya-prev\': $first, \'ya-next\': $last, \'ya-current active\': $index==$pages.current}\"><a ng-click=\"loadPage(page.key)\" ng-if=\"$index !== $pages.current\">[[ page.value ]]</a> <span ng-if=\"$index === $pages.current\">[[ page.value ]]</span></li></ol>");}]);
+$templateCache.put("yatable/paging.html","<ol class=\"pagination pagination-lg\"><li ng-repeat=\"page in $pages.list track by $index\" ng-class=\"{\'ya-prev\': $first, \'ya-next\': $last, \'ya-current active\': page.key===$pages.current}\"><a ng-click=\"loadPage(page.key)\" ng-if=\"page.key !== $pages.current\">[[ page.value ]]</a> <span ng-if=\"page.key === $pages.current\">[[ page.value ]]</span></li></ol>");}]);
