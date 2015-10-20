@@ -4,6 +4,34 @@ Yaat is a *yet another AngularJS table* but it uses server-side processing only.
 live HTML tables are required with column reordering, hiding, data sorting and paging. It is using Bootstrap
 for its styling so it doesn't try to reinvent the wheel.
 
+Table of Contents
+=================
+
+* [Install](#install)
+* [Usage](#usage)
+* [API](#api)
+  * [Declarative](#declarative)
+    * [POST ](#post)
+    * [flags object](#flags-object)
+  * [Imperative](#imperative)
+    * [Hooking](#hooking)
+    * [From scratch](#from-scratch)
+    * [Sending and accessing non-Yaat data](#sending-and-accessing-non-yaat-data)
+  * [Passing sortable(); options](#passing-sortable-options)
+  * [Mixed mode](#mixed-mode)
+* [Events](#events)
+  * [Events that Yaat is listening to](#events-that-yaat-is-listening-to)
+  * [Events that Yaat is emitting](#events-that-yaat-is-emitting)
+* [Dynamic CSS classes](#dynamic-css-classes)
+* [Overriding the standard template](#overriding-the-standard-template)
+  * [Per-table templates](#per-table-templates)
+    * [Overriding the whole template](#overriding-the-whole-template)
+  * [Helper methods](#helper-methods)
+* [Build](#build)
+* [Django integration](#django-integration)
+* [Development](#development)
+  * [Development server](#development-server)
+
 # Install
 
 Simply with npm:
@@ -74,7 +102,7 @@ HTML attributes where you can customize the behaviour of the directive:
     ```
     
     You must always return every available column name in `columns` for every request,
-    but you should not return every cell in every row. Use the `hidden` flag for those
+    but you should not return every cell in every row. Use the `hidden` property for those
     columns which should be skipped from rendering and also leave those values out from
     rows.
     `key` indicates column key, which can be anything. `value` will be placed on the
@@ -133,17 +161,18 @@ HTML attributes where you can customize the behaviour of the directive:
 
 #### `POST`
 
-On initialization the following object is `POST`ed:
+On initialization yaat `POST`s the following object:
 
 ```javascript
 {
     "offset": $scope.$offset,
-    "limit": $scope.$limit
+    "limit": $scope.$limit,
+    "flags": {}
 }
 ```
 
-You can reply with the header and the row list to this. After the table knows its headers it always sends
-their state too. So the structure after initialization is this:
+You have to reply with the header and the row list to this. After the table knows its headers it always sends
+their current client-side state in each `POST`. So the structure after initialization is this:
 
 ```
 {
@@ -155,13 +184,36 @@ their state too. So the structure after initialization is this:
             "hidden": <boolean>,
             "key": <string>
         }, ...
-    ]
+    ],
+    "flags": {}
 }
 ```
 
 You should observe property changes and header differences and reply with the required data. However the
 table is always rebuilt from scratch meaning that you can deny property changes if you want. The table
 always reflects the data it have received.
+
+#### `flags` object
+
+Since `v 1.0.4` yaat sends request flags in its `POST`s so the backend can detect which client-side event sent the 
+`POST`. The flags object is placed under the `"flags"` key. It's not a secret that this function was introduced to make
+yaat and django-yaat to work together better.
+
+All flags are merged. This simply means that if you call `$scope.init()` the object will be `{init: true}`. If you
+change the `$scope.$api` model then the watcher will set the flag `api` and calls `$scope.init()` so the `POST`ed
+flags object will be `{init: true, api: true}`.
+
+The following flags may appear in the `POST`s:
+
+-   init
+-   update
+-   yaat.update
+-   yaat.reload
+-   loadPage
+-   sortable
+
+> Note: `init` or `update` is always set because they are the core HTTP methods.
+
 
 ### Imperative
 
@@ -189,21 +241,31 @@ above section).
 You can override most of scope methods of `<yat>`'s controller in case you prefer using
 your own algorithms but you still want to stick to the original program flow:
 
--   `$scope.init(url)`
+-   `$scope.init(url [, flags])`
 
-    This method is called when the value of `$scope.$api` is initialized or changed, the value of `$scope.$limit` is changed or `yaat.init` event is received. New value of `$api` is passed as `url`.
+    This method is called when the value of `$scope.$api` is initialized or changed, the value of `$scope.$limit` is 
+    changed or `yaat.init` event is received. New value of `$api` is passed as `url`.
+    
+    This method adds the `init` flag to the `flags` object. You can also add custom flags by passing an object. This
+    object must contain the flag name and the value `true` associated to it. Keys with different values are going
+    to be dropped.
 
--   `$scope.update(sortable)`
+-   `$scope.update(sortable [, flags])`
 
-    This method is called when any table update is required (hide/sort state or
-    column order changed) or `yaat.update` event is received. When column order is changed the `sortable` element is
-    passed so you can sync the header order (when no ordering made this argument is
-    `undefined`).
+    This method is called when any table update is required (hide/sort state or column order changed) or `yaat.update` 
+    event is received. When column order is changed the `sortable` element is passed so you can sync the header order
+    (when no ordering made this argument is `undefined`).
+    
+    This method adds the `update` flag to the `flags` object. You can also add custom flags by passing an object. This
+    object must contain the flag name and the value `true` associated to it. Keys with different values are going
+    to be dropped.
     
 -   `$scope.loadPage(offset)`
 
     This method is called when the user navigates through table pages. Offset is
     the `key` value of the clicked `$scope.$pages` object (previous or next).
+    
+    This method adds the `loadPage` flag to the `flags` object.
     
 > **Important**: Your methods must operate on `yat` models or the template fails to render.
 > See the next section for model list.
@@ -297,7 +359,7 @@ reordering but you must use the imperative method described above.
     containment: 'parent',
     tolerance: 'pointer',
     update: function(){
-        scope.update(this);
+        scope.update(this, {sortable: true});
     }
 }
 ```
@@ -306,6 +368,7 @@ See the widget [documentation](http://api.jqueryui.com/sortable/) for more infor
 
 > Note: `update` callback calls the `$scope.update()` method. The `sortable` itself
 is passed as an argument.
+> Also note that the `{sortable: true}` flag is passed so this value will appear in the `flags` object.
     
 ### Mixed mode
 
@@ -324,17 +387,18 @@ so some data of the filter should be passed during paging).
 -   `yaat.init(api [, target])`
 
     This event calls `$scope.init()`. An URL must be passed (which will be stored in `$scope.$api`). You can pass the
-    id of the target table optionally.
+    id of the target table optionally. This event adds the `yaat.init` flag.
     
 -   `yaat.update([target])`
 
-    This event calls `$scope.update()` You can pass the id of the target table optionally.
+    This event calls `$scope.update()` You can pass the id of the target table optionally. This event adds the
+    `yaat.update` flag.
     
 -   `yaat.reload([target])`
 
     This event is very similar to `yaat.update` except that you should use this after the table is already initialized.
     When the table receives the event it sends its initial payload again. This is useful for cases where the data
-    is excepted to change.
+    is excepted to change. This event adds the `yaat.reload` flag.
     
 -   `yaat.http.add(key, model [, target])`
 
@@ -382,7 +446,7 @@ $scope.$on('yaat.ready', function(e){
 });
 ```
 
-### Dynamic CSS classes
+## Dynamic CSS classes
 
 There are some dynamic classes to help customizing the rendered
 table. These are:
