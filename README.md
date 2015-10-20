@@ -7,32 +7,30 @@ for its styling so it doesn't try to reinvent the wheel.
 Table of Contents
 =================
 
-  * [Yaat - yet another angularjs table](#yaat---yet-another-angularjs-table)
-  * [Install](#install)
-  * [Usage](#usage)
-    * [API](#api)
-      * [Declarative](#declarative)
-        * [POST ](#post)
-        * [flags object](#flags-object)
-      * [Imperative](#imperative)
-        * [Hooking](#hooking)
-        * [From scratch](#from-scratch)
-        * [Sending and accessing non-Yaat data](#sending-and-accessing-non-yaat-data)
-      * [Passing sortable(); options](#passing-sortable-options)
-        * [The default behaviour:](#the-default-behaviour)
-      * [Mixed mode](#mixed-mode)
-    * [Events](#events)
-      * [Events that Yaat is listening to](#events-that-yaat-is-listening-to)
-      * [Events that Yaat is emitting](#events-that-yaat-is-emitting)
-      * [Dynamic CSS classes](#dynamic-css-classes)
-    * [Overriding the standard template](#overriding-the-standard-template)
-      * [Per-table templates](#per-table-templates)
-        * [Overriding the whole template](#overriding-the-whole-template)
-      * [Helper methods](#helper-methods)
-    * [Build](#build)
-    * [Django integration](#django-integration)
-    * [Development](#development)
-      * [Development server](#development-server)
+* [Install](#install)
+* [Usage](#usage)
+* [API](#api)
+  * [Declarative](#declarative)
+    * [POST ](#post)
+    * [flags object](#flags-object)
+  * [Imperative](#imperative)
+    * [Hooking](#hooking)
+    * [From scratch](#from-scratch)
+    * [Sending and accessing non-Yaat data](#sending-and-accessing-non-yaat-data)
+  * [Passing sortable(); options](#passing-sortable-options)
+  * [Mixed mode](#mixed-mode)
+* [Events](#events)
+  * [Events that Yaat is listening to](#events-that-yaat-is-listening-to)
+  * [Events that Yaat is emitting](#events-that-yaat-is-emitting)
+* [Dynamic CSS classes](#dynamic-css-classes)
+* [Overriding the standard template](#overriding-the-standard-template)
+  * [Per-table templates](#per-table-templates)
+    * [Overriding the whole template](#overriding-the-whole-template)
+  * [Helper methods](#helper-methods)
+* [Build](#build)
+* [Django integration](#django-integration)
+* [Development](#development)
+  * [Development server](#development-server)
 
 # Install
 
@@ -448,7 +446,7 @@ $scope.$on('yaat.ready', function(e){
 });
 ```
 
-### Dynamic CSS classes
+## Dynamic CSS classes
 
 There are some dynamic classes to help customizing the rendered
 table. These are:
