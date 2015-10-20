@@ -25,12 +25,12 @@ angular.module('yaat', [])
 
     // Watchers ----------------------------------------------------------------
     $scope.$watch('$api', function(){
-        $scope.init($scope.$api);
+        $scope.init($scope.$api, {api: true});
     });
 
     $scope.$watch('$limit', function(newValue, oldValue){
         if(newValue !== oldValue){
-            $scope.init($scope.$api);
+            $scope.init($scope.$api, {limit: true});
         }
     });
 
@@ -55,7 +55,7 @@ angular.module('yaat', [])
     $scope.$on('yaat.init', function(e, api, target){
         if(target === undefined || target == $scope.$yaatId){
             if($scope.$api === api){
-                $scope.init($scope.$api);
+                $scope.init($scope.$api, {'yaat.init': true});
             }
             $scope.$api = api;
         }
@@ -63,21 +63,22 @@ angular.module('yaat', [])
 
     $scope.$on('yaat.reload', function(e, target){
         if(target === undefined || target == $scope.$yaatId){
-            $scope.init($scope.$api);
+            $scope.init($scope.$api, {'yaat.reload': true});
         }
     });
 
     $scope.$on('yaat.update', function(e, target){
         if(target === undefined || target === $scope.$yaatId){
-            $scope.update();
+            $scope.update({'yaat.update': true});
         }
     });
 
     // Scope methods -----------------------------------------------------------
     if($scope.init === undefined){
-        $scope.init = function(url){
+        $scope.init = function(url, flags){
             if(url !== undefined) {
-                var payload = angular.extend({}, self.initPayload(), $scope.$postExtra);
+                flags = self.cleanFlags(angular.extend({init: true}, flags));
+                var payload = angular.extend(flags, self.initPayload(), $scope.$postExtra);
                 $http({
                     method: 'POST',
                     url: url,
@@ -93,12 +94,18 @@ angular.module('yaat', [])
     }
 
     if($scope.update === undefined){
-        $scope.update = function(sortable){
+        $scope.update = function(sortable, flags){
+            if(arguments.length === 1){
+                flags = sortable;
+                sortable = undefined;
+            }
+
             if(sortable !== undefined){
                 self.applyOrder(sortable);
             }
 
-            var payload = angular.extend({}, self.getPayload(), $scope.$postExtra);
+            flags = self.cleanFlags(angular.extend({update: true}, flags));
+            var payload = angular.extend(flags, self.getPayload(), $scope.$postExtra);
 
             $http({
                 method: 'POST',
@@ -117,7 +124,7 @@ angular.module('yaat', [])
         $scope.loadPage = function(offset){
             if(offset){
                 $scope.$offset = offset;
-                $scope.update();
+                $scope.update({loadPage: true});
             }
         }
     }
@@ -136,7 +143,7 @@ angular.module('yaat', [])
 
     $scope.toggleSorting = function(header){
         header.order = (header.order + 1) % 3;
-        $scope.update();
+        $scope.update({toggleSorting: true});
     };
 
     // Controller only ---------------------------------------------------------
@@ -216,6 +223,20 @@ angular.module('yaat', [])
             headers: clean
         }
     };
+
+    this.cleanFlags = function(flags){
+        var flagsObject = {
+            flags: {}
+        };
+
+        angular.forEach(flags, function(v, k){
+            if(v === true){
+                flagsObject.flags[k] = v;
+            }
+        });
+
+        return flagsObject
+    }
 }])
 .directive('yat', [function(){
     return {
@@ -263,7 +284,7 @@ angular.module('yaat', [])
 
             // Sortable setup --------------------------------------------------
             var updateHandler = function(){
-                scope.update(this)
+                scope.update(this, {sortable: true});
             };
 
             var options = scope.$sortableOptions;
