@@ -1,6 +1,6 @@
 /*
-    yaat v1.0.4 - https://github.com/slapec/yaat
-    build date: 2015-10-20T06:56:24.658Z
+    yaat v1.0.5 - https://github.com/slapec/yaat
+    build date: 2016-01-06T13:28:11.690Z
 */
 angular.module('yaat', [])
 .config(['$interpolateProvider', function($interpolateProvider) {
@@ -310,14 +310,16 @@ angular.module('yaat', [])
                 if(url === 'yatable/dropdown.html'){
                     disable();
 
-                    var headerList = $(element).find('.ya-headers');
-                    headerList.disableSelection();
-                    headerList.sortable(options);
+                    if(!scope.$noDropdown){
+                        var headerList = $(element).find('.ya-headers');
+                        headerList.disableSelection();
+                        headerList.sortable(options);
 
-                    // To avoid the dropdown closing itself when clicking on a checkbox
-                    $(document).on('click', '.dropdown-menu', function(e) {
-                        e.stopPropagation();
-                    });
+                        // To avoid the dropdown closing itself when clicking on a checkbox
+                        $(document).on('click', '.dropdown-menu', function(e) {
+                            e.stopPropagation();
+                        });
+                    }
                 }
             });
 
@@ -330,4 +332,4 @@ angular.module("yaat").run(["$templateCache", function($templateCache) {$templat
 $templateCache.put("yatable/controls.html","<div class=\"pull-right dropdown\" ng-hide=\"$noDropdown\" ng-include=\"\'yatable/dropdown.html\'\"></div>");
 $templateCache.put("yatable/dropdown.html","<button class=\"btn btn-default dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">[[ ::dropdownText ]] <span class=\"caret\"></span></button><ol class=\"ya-headers dropdown-menu\" aria-labelledby=\"dropdownMenu\"><li ng-repeat=\"header in $headers\" id=\"[[ ::header.key ]]\"><input id=\"hide-[[ ::header.key ]]\" type=\"checkbox\" class=\"glyphicon ya-hide\" ng-model=\"header.hidden\" ng-disabled=\"header.unhideable\" ng-click=\"update()\"><label for=\"hide-[[ ::header.key ]]\" class=\"glyphicon\"></label><span class=\"ya-header-value\">[[ ::header.value ]]</span></li></ol>");
 $templateCache.put("yatable/row.html","<tr ng-repeat=\"row in $rows\"><td ng-repeat=\"cell in row.values track by $index\" class=\"yc-[[ getKey($index) ]]\">[[ ::cell ]]</td></tr>");
-$templateCache.put("yatable/paging.html","<ol class=\"pagination pagination-lg\"><li ng-repeat=\"page in $pages.list track by $index\" ng-class=\"{\'ya-prev\': $first, \'ya-next\': $last, \'ya-current active\': page.key===$pages.current}\"><a ng-click=\"loadPage(page.key)\" ng-if=\"page.key !== $pages.current\">[[ page.value ]]</a> <span ng-if=\"page.key === $pages.current\">[[ page.value ]]</span></li></ol>");}]);
+$templateCache.put("yatable/paging.html","<ol class=\"pagination pagination-lg\"><li ng-repeat=\"page in $pages.list track by $index\" ng-class=\"{\'ya-prev\': $first, \'ya-next\': $last, \'ya-current active\': page.key===$pages.current}\" ng-if=\"page\"><a ng-click=\"loadPage(page.key)\" ng-if=\"page.key !== $pages.current\">[[ page.value ]]</a> <span ng-if=\"page.key === $pages.current\">[[ page.value ]]</span></li></ol>");}]);

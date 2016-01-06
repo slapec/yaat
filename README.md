@@ -44,9 +44,12 @@ Or just download the repository and bundle it in your project.
 
 1. Yaat uses some 3rd-party libraries. Hope you've already using some of them. These are:
     - jQuery
-    - jQuery-UI
+    - jQuery-UI*
     - Bootstrap
     - AngularJS
+    
+    _(* jQuery-UI is only required when the column dropdown is visible. See the `nodropdown` option for
+    more information)_
 
 2. Don't forget to include `yaat.min.js` and `yaat.css` files as well!
 3. Yaat registers the `yaat` module. Either use it directly as an AngularJS app or create your own module which depends
@@ -76,7 +79,7 @@ HTML attributes where you can customize the behaviour of the directive:
             {
                 "key": <string>,
                 "value": <string>,
-                "order": <boolean>,
+                "order": <integer>,
                 "hidden": <boolean>
             }, ...
         ],
@@ -105,21 +108,25 @@ HTML attributes where you can customize the behaviour of the directive:
     but you should not return every cell in every row. Use the `hidden` property for those
     columns which should be skipped from rendering and also leave those values out from
     rows.
-    `key` indicates column key, which can be anything. `value` will be placed on the
-    rendered table.
-    Use the key `order` to indicate if the column is ordered. Value `0` stands for unordered,
-    `1` is for ascending and `2` is for descending order.
     
-    Leave `"order"` or `"hidden"` keys out if you don't wish to let the user change their
-    value (their toggle buttons will not be rendered).
+    - `"key"` indicates column key, which can be anything.
+
+    - `"value"` will be placed on the rendered table.
+   
+    - Use the key `"order"` to indicate if the column is ordered. Value `0` stands for unordered,
+      `1` is for ascending and `2` is for descending order.
     
-    `rows` contains every result rows. `id` field should be unique for each row
-    (so you should use some primary key here). `values` array contains the actual row cells.
+    - Leave `"order"` or `"hidden"` keys out if you don't wish to let the user change their
+      value (their toggle buttons will not be rendered).
     
-    `pages.list` object contains pages as an array. In it the `key` is used as
-    page offset (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
-    `pages.current` is the key of the current page in the `pages.list` array. It is
-    rendered non-clickable.
+    - `"rows"` contains every result rows. `id` field should be unique for each row
+       (so you should use some primary key here). `values` array contains the actual row cells.
+    
+    - `pages.list` object contains pages as an array. In it the `"key"` is used as page offset 
+      (passed to `$scope.loadPage()`) and `value` is rendered on the UI.
+
+    - `pages.current` is equal to the `"key"` of the current page in the `pages.list` array. 
+       It is rendered non-clickable.
     
 -   `offset`
     
@@ -141,6 +148,7 @@ HTML attributes where you can customize the behaviour of the directive:
 
     Use this attribute if you wish to hide the dropdown. The value of the attribute is not stored
     but if the attribute exists the `$scope.$noDropdown` is set to `true`. Default value: `false`.
+    If this attribute is set ten jQuery-UI is not required.
     
 -   `dropdownText`
 
@@ -180,7 +188,7 @@ their current client-side state in each `POST`. So the structure after initializ
     "limit": $scope.$limit,
     "headers": [
         {
-            "order": <boolean>,
+            "order": <integer>,
             "hidden": <boolean>,
             "key": <string>
         }, ...
@@ -283,7 +291,7 @@ However there are some variables you must use to hold the values to be rendered:
         {
             "key": <string>,
             "value": <string>,
-            "order": <boolean>,
+            "order": <integer>,
             "hidden": <boolean>
         }, ...
     ]

@@ -306,14 +306,16 @@ angular.module('yaat', [])
                 if(url === 'yatable/dropdown.html'){
                     disable();
 
-                    var headerList = $(element).find('.ya-headers');
-                    headerList.disableSelection();
-                    headerList.sortable(options);
+                    if(!scope.$noDropdown){
+                        var headerList = $(element).find('.ya-headers');
+                        headerList.disableSelection();
+                        headerList.sortable(options);
 
-                    // To avoid the dropdown closing itself when clicking on a checkbox
-                    $(document).on('click', '.dropdown-menu', function(e) {
-                        e.stopPropagation();
-                    });
+                        // To avoid the dropdown closing itself when clicking on a checkbox
+                        $(document).on('click', '.dropdown-menu', function(e) {
+                            e.stopPropagation();
+                        });
+                    }
                 }
             });
 

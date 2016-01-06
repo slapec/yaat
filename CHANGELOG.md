@@ -1,4 +1,9 @@
 # Change log
+## [1.0.5] - 2016-01-06
+### Changed
+-   jQuery-UI is not required when `nodropdown` is set to true.
+-   `yatable/paging.html` skips rendering `null` values.
+
 ## [1.0.4] - 2015-10-20
 ### Added
 -   A new key (`"flags"`) is sent by yaat in every `POST` (along with `"offset"`, `"limit"` and `"headers"`). This flag
