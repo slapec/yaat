@@ -408,7 +408,7 @@ so some data of the filter should be passed during paging).
     When the table receives the event it sends its initial payload again. This is useful for cases where the data
     is excepted to change. This event adds the `yaat.reload` flag.
     
--   `yaat.http.add(key, model [, target])`
+-   `yaat.http.post.add(key, model [, target])`
 
     You can use this event to add models which should also be
     sent along with Yaat's own data. This is useful when the
@@ -419,7 +419,7 @@ so some data of the filter should be passed during paging).
     reserved `POST` keys (`offset`, `limit` and `headers`).
     To be sure an error is thrown on conflict.
     
--   `yaat.http.remove(key [, target])`
+-   `yaat.http.post.remove(key [, target])`
 
     Use this event to remove a model previously added to be
     sent along with Yaat's own data. You can pass the id of
