@@ -1,4 +1,7 @@
 # Change log
+## [1.0.6] - 2016-10-20
+-   `yaat.min.js` was missing for some reason
+
 ## [1.0.5] - 2016-01-06
 ### Changed
 -   jQuery-UI is not required when `nodropdown` is set to true.
