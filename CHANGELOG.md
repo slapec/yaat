@@ -1,4 +1,7 @@
 # Change log
+## [1.0.7] - 2016-10-20
+-   I always forget to recompile
+
 ## [1.0.6] - 2016-10-20
 -   `yaat.min.js` was missing for some reason
 
